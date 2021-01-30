@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const WebpackCopyPlugin = require("copy-webpack-plugin");
 const packageJson = require('./package.json');
 const envVars = require('./.env.json');
 
@@ -11,7 +12,7 @@ const webpackConfig = {
     main: './main.js',
   },
   output: {
-    publicPath: 'scripts/',
+    publicPath: '/',
     path: path.resolve(__dirname, 'dist', 'scripts'),
     filename: '[name].bundle.js',
     sourceMapFilename: '[name].map',
@@ -25,7 +26,10 @@ const webpackConfig = {
         exclude: [
           {
             test: path.resolve(__dirname, 'node_modules'),
-            exclude: path.resolve(__dirname, 'node_modules/leaflet/dist/leaflet.css')
+            exclude: [
+              path.resolve(__dirname, 'node_modules/leaflet/dist/leaflet.css'),
+              path.resolve(__dirname, 'node_modules/leaflet-draw/dist/leaflet.draw.css')
+            ]
           }
         ],
         loader: 'raw-loader'
@@ -41,6 +45,15 @@ const webpackConfig = {
     new webpack.DefinePlugin({
       VERSION: JSON.stringify(version),
       ENV: JSON.stringify(envVars),
+    }),
+    new WebpackCopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'node_modules/leaflet-draw/dist/images'),
+          to: 'images',
+        },
+        // { from: "other", to: "public" },
+      ],
     }),
   ]
 };

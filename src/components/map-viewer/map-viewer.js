@@ -1,8 +1,12 @@
-import leaflet from 'leaflet';
+import * as L from 'leaflet';
+import 'leaflet-draw';
 import BaseComponent from '../primitives/util/base-component';
 import markup from './map-viewer.html';
-import styles from './map-viewer.css';
+import customStyles from './map-viewer.css';
 import leafletSyles from 'leaflet/dist/leaflet.css';
+import leafletDrawStyles from 'leaflet-draw/dist/leaflet.draw.css';
+
+const styles = `${leafletSyles}\n${leafletDrawStyles}\n${customStyles}`;
 
 const INIT_COORDS = {
   KC: [ 39.0353, -94.5691 ],
@@ -15,12 +19,16 @@ export default class MapViewer extends BaseComponent {
   }
 
   constructor() {
-    super(`${leafletSyles}\n${styles}`, markup, [ 'mapContainer', ]);
+    super(styles, markup, [ 'mapContainer', ]);
   }
 
   connectedCallback() {
+    this.initMap();
+  }
+
+  initMap() {
     const { mapBoxAccessToken, } = ENV; // eslint-disable-line no-undef
-    const leafletMap = leaflet.map(
+    const leafletMap = L.map(
       this.dom.mapContainer,
       {
         zoom: 12,
@@ -37,19 +45,61 @@ export default class MapViewer extends BaseComponent {
       zoomOffset: -1,
       accessToken: mapBoxAccessToken,
     };
-    leaflet.tileLayer(tileLayer, options).addTo(leafletMap);
+    L.tileLayer(tileLayer, options).addTo(leafletMap);
 
-    const circle = leaflet.circle([51.508, -0.11], {
+    const circle = L.circle([51.508, -0.11], {
       color: 'red',
       fillColor: '#f03',
       fillOpacity: 0.5,
       radius: 500
     }).addTo(leafletMap);
 
-    var polygon = leaflet.polygon([
+    var polygon = L.polygon([
       [51.509, -0.08],
       [51.503, -0.06],
       [51.51, -0.047]
     ]).addTo(leafletMap);
+
+
+    // Initialise the FeatureGroup to store editable layers
+    const editableLayers = new L.FeatureGroup();
+    leafletMap.addLayer(editableLayers);
+
+    const drawOptions = {
+      position: 'topleft',
+      draw: {
+        polyline: false,
+        polygon: false,
+        circle: false,
+        circlemarker: false,
+        marker: false,
+        rectangle: true,
+      },
+      edit: {
+        featureGroup: editableLayers,
+        remove: true
+      }
+    };
+
+    // Initialise the draw control and pass it the FeatureGroup of editable layers
+    const drawControl = new L.Control.Draw(drawOptions);
+    leafletMap.addControl(drawControl);
+
+    const editableLayers2 = new L.FeatureGroup();
+    leafletMap.addLayer(editableLayers2);
+
+    leafletMap.on('draw:created', leafletEvent => {
+      const type = leafletEvent.layerType;
+      const layer = leafletEvent.layer;
+
+      if (type !== 'rectangle') {
+        layer.bindPopup('Only rectangles supported');
+      } else {
+        console.log(layer.getLatLngs());
+        layer.bindPopup('Rect:');
+      }
+      editableLayers2.addLayer(layer);
+    });
   }
+
 }

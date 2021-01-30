@@ -10,6 +10,7 @@
     "lint": "eslint src"
   },
   "devDependencies": {
+    "copy-webpack-plugin": "6.1.0",
     "eslint": "^7.0.0-alpha.3",
     "esm": "^3.2.22",
     "mocha": "^7.1.1",
@@ -19,6 +20,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "leaflet": "^1.7.1"
+    "leaflet": "^1.7.1",
+    "leaflet-draw": "^1.0.4"
   }
 }
