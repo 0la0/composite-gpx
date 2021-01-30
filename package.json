@@ -1,0 +1,24 @@
+{
+  "name": "gps-viz",
+  "version": "0.0.1",
+  "description": "Visualize GPS",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "start": "webpack-dev-server --mode=development --inline --colors --progress",
+    "test": "NODE_PATH=./src/app mocha -r esm test/**/*.test.js",
+    "lint": "eslint src"
+  },
+  "devDependencies": {
+    "eslint": "^7.0.0-alpha.3",
+    "esm": "^3.2.22",
+    "mocha": "^7.1.1",
+    "raw-loader": "^4.0.1",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "leaflet": "^1.7.1"
+  }
+}
