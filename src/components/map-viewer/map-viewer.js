@@ -28,12 +28,12 @@ export default class MapViewer extends BaseComponent {
 
   initMap() {
     const { mapBoxAccessToken, } = ENV; // eslint-disable-line no-undef
-    const leafletMap = L.map(
+    this.leafletMap = L.map(
       this.dom.mapContainer,
       {
         zoom: 12,
         preferCanvas: true,
-        center: INIT_COORDS.LONDON,
+        center: INIT_COORDS.KC,
       }
     );
     const tileLayer = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${mapBoxAccessToken}`;
@@ -45,25 +45,25 @@ export default class MapViewer extends BaseComponent {
       zoomOffset: -1,
       accessToken: mapBoxAccessToken,
     };
-    L.tileLayer(tileLayer, options).addTo(leafletMap);
+    L.tileLayer(tileLayer, options).addTo(this.leafletMap);
 
-    const circle = L.circle([51.508, -0.11], {
-      color: 'red',
-      fillColor: '#f03',
-      fillOpacity: 0.5,
-      radius: 500
-    }).addTo(leafletMap);
+    // const circle = L.circle([51.508, -0.11], {
+    //   color: 'red',
+    //   fillColor: '#f03',
+    //   fillOpacity: 0.5,
+    //   radius: 500
+    // }).addTo(this.leafletMap);
 
-    var polygon = L.polygon([
-      [51.509, -0.08],
-      [51.503, -0.06],
-      [51.51, -0.047]
-    ]).addTo(leafletMap);
+    // var polygon = L.polygon([
+    //   [51.509, -0.08],
+    //   [51.503, -0.06],
+    //   [51.51, -0.047]
+    // ]).addTo(this.leafletMap);
 
 
     // Initialise the FeatureGroup to store editable layers
     const editableLayers = new L.FeatureGroup();
-    leafletMap.addLayer(editableLayers);
+    this.leafletMap.addLayer(editableLayers);
 
     const drawOptions = {
       position: 'topleft',
@@ -83,12 +83,12 @@ export default class MapViewer extends BaseComponent {
 
     // Initialise the draw control and pass it the FeatureGroup of editable layers
     const drawControl = new L.Control.Draw(drawOptions);
-    leafletMap.addControl(drawControl);
+    this.leafletMap.addControl(drawControl);
 
     const editableLayers2 = new L.FeatureGroup();
-    leafletMap.addLayer(editableLayers2);
+    this.leafletMap.addLayer(editableLayers2);
 
-    leafletMap.on('draw:created', leafletEvent => {
+    this.leafletMap.on('draw:created', leafletEvent => {
       const type = leafletEvent.layerType;
       const layer = leafletEvent.layer;
 
@@ -100,6 +100,24 @@ export default class MapViewer extends BaseComponent {
       }
       editableLayers2.addLayer(layer);
     });
+  }
+
+  plotActivities(activities) {
+    console.log('plot', activities);
+    const pointOptions = {
+      color: 'red',
+      // fillColor: '#f03',
+      // fillOpacity: 0.5,
+      radius: 2
+    };
+    activities.forEach(activities => {
+      const { points, } = activities;
+      points.forEach(point => {
+        const latLon = [point.lat, point.lon];
+        const circle = L.circle(latLon, pointOptions).addTo(this.leafletMap);
+      });
+    });
+    // L.control.layers(baseMaps, overlayMaps).addTo(map);
   }
 
 }

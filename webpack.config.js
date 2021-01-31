@@ -39,6 +39,9 @@ const webpackConfig = {
   devServer: {
     port: 3001,
     contentBase: path.resolve(__dirname, 'src'),
+    proxy: {
+      '/api': 'http://localhost:3000',
+    },
   },
   mode: process.env.WEBPACK_SERVE ? 'development' : 'production',
   plugins: [

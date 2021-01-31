@@ -1,5 +1,6 @@
 import App from '../app';
 import Primitives from '../primitives';
+import ActivityEditor from '../activity-editor/activity-editor.js';
 import MapViewer from '../map-viewer/map-viewer.js';
 
 const components = [
@@ -12,6 +13,7 @@ const components = [
   Primitives.TextInput,
   Primitives.ToastNotifcation,
   App,
+  ActivityEditor,
   MapViewer,
 ];
 

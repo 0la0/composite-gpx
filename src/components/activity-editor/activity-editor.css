@@ -1,0 +1,35 @@
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.profile-viewer {
+  background-color: #CCCCCC88;
+  position: absolute;
+  border-left: 1px solid var(--color-grey-dark);
+  border-bottom: 1px solid var(--color-grey-dark);
+  border-radius: 0 0 0 4px;
+  top: 0;
+  right: 0;
+  padding: 12px;
+  color: var(--color-black);
+  z-index: 500; /* leaflet is set to z-index 400 */
+}
+
+.title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.profile-button {
+  background: unset;
+  background-color: var(--color-grey-light);
+  border: 1px solid black;
+  border-radius: 4px;
+  outline: unset;
+  margin: 8px;
+  padding: 4px;
+  cursor: pointer;
+}

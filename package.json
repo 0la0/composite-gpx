@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "clean": "rm -rf dist",
-    "start": "webpack-dev-server --mode=development --inline --colors --progress",
+    "start:web": "webpack-dev-server --mode=development --inline --colors --progress",
+    "start:server": "cd server; npm start",
+    "start": "npm run start:server & npm run start:web",
     "test": "NODE_PATH=./src/app mocha -r esm test/**/*.test.js",
     "lint": "eslint src"
   },
