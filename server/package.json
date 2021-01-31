@@ -4,7 +4,7 @@
   "description": "composite-gpx-server",
   "main": "src/main.js",
   "type": "module",
-  "scripts": {  
+  "scripts": {
     "clean": "rm -rf dist",
     "start": "node src/main.js",
     "test": "NODE_PATH=./src/app mocha -r esm test/**/*.test.js",
@@ -15,5 +15,7 @@
     "esm": "^3.2.22",
     "mocha": "^7.1.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "xmldom": "^0.4.0"
+  }
 }

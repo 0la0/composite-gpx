@@ -2,6 +2,7 @@ import child_process from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import zlib from 'zlib';
+import { DOMParser } from 'xmldom';
 
 const FILE_TYPE = {
   GUNZIP: '.gz',
@@ -14,13 +15,14 @@ const FILE_TYPE = {
 const DIR = {
   FIT: '_temp/fit',
   RAW: '_temp/raw',
-  TRANSFORMED: '_temp/transformed',
+  GPX: '_temp/gpx',
+  JSON: '_temp/json',
 };
 
 function cleanTemporaryDirectories() {
-  fs.rmSync(DIR.TRANSFORMED, { recursive: true, force: true });
+  fs.rmSync(DIR.GPX, { recursive: true, force: true });
   fs.rmSync(DIR.FIT, { recursive: true, force: true });
-  fs.mkdirSync(DIR.TRANSFORMED);
+  fs.mkdirSync(DIR.GPX);
   fs.mkdirSync(DIR.FIT);
 }
 
@@ -32,12 +34,12 @@ function uncompressFiles() {
       return; 
     }
     if (fileExt === FILE_TYPE.GPX) {
-      fs.copyFileSync(srcFilePath, `${DIR.TRANSFORMED}/${file}`);
+      fs.copyFileSync(srcFilePath, `${DIR.GPX}/${file}`);
     }
     else if (file.endsWith(FILE_TYPE.GPX_GUNZIP)) {
       const gzIndex = file.lastIndexOf(FILE_TYPE.GUNZIP);
       const nameWithoutGz = file.slice(0, gzIndex);
-      const destFilePath = `${DIR.TRANSFORMED}/${nameWithoutGz}`;
+      const destFilePath = `${DIR.GPX}/${nameWithoutGz}`;
       const gpxString = zlib.unzipSync(fs.readFileSync(srcFilePath)).toString('utf8');
       fs.writeFileSync(destFilePath, gpxString);
     }
@@ -45,27 +47,72 @@ function uncompressFiles() {
       const fitGzIndex = file.lastIndexOf(FILE_TYPE.FIT_GUNZIP);
       const nameWithoutFitGz = file.slice(0, fitGzIndex);
       const uncompressedFitFilePath = `${DIR.FIT}/${nameWithoutFitGz}.fit`;
-      const destFilePath = `${DIR.TRANSFORMED}/${nameWithoutFitGz}.gpx`;
-
+      const destFilePath = `${DIR.GPX}/${nameWithoutFitGz}.gpx`;
       const uncompressedFitBuffer = zlib.unzipSync(fs.readFileSync(srcFilePath));
       fs.writeFileSync(uncompressedFitFilePath, uncompressedFitBuffer);
-
       const fitToGpxCommand = `gpsbabel -i garmin_fit -f ${uncompressedFitFilePath} -o gpx -F ${destFilePath}`;
       child_process.execSync(fitToGpxCommand);
-
-      // gpsbabel -i garmin_fit -f INPUT_FILE.fit -o gpx -F OUTPUT_FILE.gpx
-      
-      // console.log('TODO: move', file, destFilePath);
-
-      // const gpxString = zlib.unzipSync(fs.readFileSync(srcFilePath)).toString('utf8');
-      // fs.writeFileSync(destFilePath, gpxString);
     }
-  });  
+    else {
+      console.log(`Unrecognized file type: ${file}`);
+    }
+  });
+  console.log('Files converted to gpx');
 }
 
+function gpxFileToJson(filePath) {
+  const fileString = fs.readFileSync(filePath, 'utf8').toString();
+  const doc = new DOMParser().parseFromString(fileString);
+  const trk = doc.getElementsByTagName('trk')[0];
+  const trkSegs = Array.prototype.slice.call(trk.getElementsByTagName('trkseg'));
+  const trkPoints = trkSegs.flatMap(seg => {
+    const points = seg.getElementsByTagName('trkpt');
+    return Array.prototype.slice.call(points);
+  });
+
+  const points = trkPoints.map(trkPoint => {
+    const elevationString = trkPoint.getElementsByTagName('ele')[0]?.textContent ?? '0';
+    const time = trkPoint.getElementsByTagName('time')[0]?.textContent ?? '0';
+    return {
+      lat: parseFloat(trkPoint.getAttribute('lat')),
+      lon: parseFloat(trkPoint.getAttribute('lon')),
+      time,
+      elevation: parseFloat(elevationString),
+    };
+  });
+
+  const boundsElement = doc.getElementsByTagName('bounds')[0];
+  const bounds = {
+    minlat: parseFloat(boundsElement.getAttribute('minlat')),
+    minlon: parseFloat(boundsElement.getAttribute('minlon')),
+    maxlat: parseFloat(boundsElement.getAttribute('maxlat')),
+    maxlon: parseFloat(boundsElement.getAttribute('maxlon')),
+  };
+
+  const activity = {
+    time: points[0].time,
+    bounds,
+    points,
+  };
+  return activity;
+}
+
+
+function convertGpxToJson() {
+  const activities = fs.readdirSync(DIR.GPX).map((file) => {
+    const srcFilePath = `${DIR.GPX}/${file}`;
+    return gpxFileToJson(srcFilePath);
+  });
+  // console.log(activities);
+  const data = { activities, };
+  fs.writeFileSync(`${DIR.JSON}/test.json`, JSON.stringify(data));
+}
+
+
 function init() {
-  cleanTemporaryDirectories();
-  uncompressFiles();
+  // cleanTemporaryDirectories();
+  // uncompressFiles();
+  convertGpxToJson();
 }
 
 init();
