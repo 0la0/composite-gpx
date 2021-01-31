@@ -6,3 +6,5 @@ package-lock.json
 firebase-debug.log
 notes
 .env.json
+server/node_modules
+server/_temp

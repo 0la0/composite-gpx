@@ -1,7 +1,7 @@
 {
-  "name": "gps-viz",
+  "name": "composite-gpx",
   "version": "0.0.1",
-  "description": "Visualize GPS",
+  "description": "HighRes images of GPX data",
   "main": "dist/index.js",
   "scripts": {
     "clean": "rm -rf dist",

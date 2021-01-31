@@ -1,0 +1,19 @@
+{
+  "name": "composite-gpx-server",
+  "version": "0.0.1",
+  "description": "composite-gpx-server",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {  
+    "clean": "rm -rf dist",
+    "start": "node src/main.js",
+    "test": "NODE_PATH=./src/app mocha -r esm test/**/*.test.js",
+    "lint": "eslint src"
+  },
+  "devDependencies": {
+    "eslint": "^7.0.0-alpha.3",
+    "esm": "^3.2.22",
+    "mocha": "^7.1.1"
+  },
+  "dependencies": {}
+}
