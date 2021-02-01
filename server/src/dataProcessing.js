@@ -69,10 +69,10 @@ function gpxFileToJson(filePath) {
 
   const boundsElement = doc.getElementsByTagName('bounds')[0];
   const bounds = {
-    minlat: parseFloat(boundsElement.getAttribute('minlat')),
-    minlon: parseFloat(boundsElement.getAttribute('minlon')),
-    maxlat: parseFloat(boundsElement.getAttribute('maxlat')),
-    maxlon: parseFloat(boundsElement.getAttribute('maxlon')),
+    minlat: parseFloat(boundsElement?.getAttribute('minlat') ?? '0'),
+    minlon: parseFloat(boundsElement?.getAttribute('minlon') ?? '0'),
+    maxlat: parseFloat(boundsElement?.getAttribute('maxlat') ?? '0'),
+    maxlon: parseFloat(boundsElement?.getAttribute('maxlon') ?? '0'),
   };
 
   const activity = {
@@ -83,15 +83,22 @@ function gpxFileToJson(filePath) {
   return activity;
 }
 
+function getMinimalActivities(activities) {
+  return activities.map(activity => ({
+    ...activity,
+    points: activity.points.filter((point, index) => index % 20 === 0)
+  }));
+}
 
 function convertGpxToJson(fileName) {
   const activities = fs.readdirSync(DIR.GPX).map((file) => {
     const srcFilePath = `${DIR.GPX}/${file}`;
     return gpxFileToJson(srcFilePath);
   });
-  // console.log(activities);
   const data = { activities, };
+  const minimalActivities = { activities: getMinimalActivities(activities), };
   fs.writeFileSync(`${DIR.JSON}/${fileName}.json`, JSON.stringify(data));
+  fs.writeFileSync(`${DIR.JSON}/${fileName}.min.json`, JSON.stringify(minimalActivities));
 }
 
 
@@ -101,8 +108,8 @@ function init() {
     console.log('Usage: npm run processData [fileName]');
     process.exit(1);
   }
-  // cleanTemporaryDirectories();
-  // uncompressFiles();
+  cleanTemporaryDirectories();
+  uncompressFiles();
   convertGpxToJson(fileName);
 }
 

@@ -1,7 +1,17 @@
 <router-outlet route="/">
+  <p class="text-block">
+    <a href="/#/editor">Editor</a>
+  </p>
+  <br />
+  <p class="text-block">
+    <a href="/#/renderer">Renderer</a>
+  </p>
+</router-outlet>
+
+<router-outlet route="/editor">
   <activity-editor></activity-editor>
 </router-outlet>
 
-<!-- <router-outlet route="/renderer">
+<router-outlet route="/renderer">
   <activity-renderer><activity-renderer>
-</router-outlet> -->
+</router-outlet>

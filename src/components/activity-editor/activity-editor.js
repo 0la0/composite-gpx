@@ -11,13 +11,19 @@ export default class ActivityEditor extends BaseComponent {
   constructor() {
     super(styles, markup, [ 'map', 'profiles', ]);
     this.profileService = new ProfileService();
+    this.activeProfileName = '';
   }
 
   connectedCallback() {
     console.log(this.dom.map);
+    this.dom.map.setRenderViewCallback(this.createRenderView.bind(this));
     this.profileService.getProfiles()
       .then(response => this.renderProfileSelector(response.profiles))
       .catch(error => console.log(error));
+  }
+
+  createRenderView(bounds) {
+    this.profileService.createRenderView(this.activeProfileName, bounds);
   }
 
   loadProfile(profileName) {
@@ -27,6 +33,7 @@ export default class ActivityEditor extends BaseComponent {
         if (!activities || !activities.length) {
           throw new Error('No activities', response);
         }
+        this.activeProfileName = profileName;
         this.dom.map.plotActivities(activities);
       })
       .catch(error => console.log(error));
@@ -34,6 +41,7 @@ export default class ActivityEditor extends BaseComponent {
 
   renderProfileSelector(profiles = []) {
     requestAnimationFrame(() => {
+      this.activeProfileName = '';
       [...this.dom.profiles.children].forEach(child => this.dom.profiles.removeChild(child));
       profiles.forEach(profile => {
         const profileButton = document.createElement('button');

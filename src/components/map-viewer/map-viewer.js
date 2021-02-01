@@ -20,10 +20,15 @@ export default class MapViewer extends BaseComponent {
 
   constructor() {
     super(styles, markup, [ 'mapContainer', ]);
+    this.renderViewCallback = () => {};
   }
 
   connectedCallback() {
     this.initMap();
+  }
+
+  setRenderViewCallback(renderViewCallback) {
+    this.renderViewCallback = renderViewCallback;
   }
 
   initMap() {
@@ -95,15 +100,22 @@ export default class MapViewer extends BaseComponent {
       if (type !== 'rectangle') {
         layer.bindPopup('Only rectangles supported');
       } else {
-        console.log(layer.getLatLngs());
-        layer.bindPopup('Rect:');
+        const createRenderView= window.confirm('Create render view?');
+        if (createRenderView) {
+          const latLngs = layer.getLatLngs()[0];
+          const bounds = {
+            minlat: latLngs[0].lat,
+            minlon: latLngs[0].lng,
+            maxlat: latLngs[1].lat,
+            maxlon: latLngs[2].lng,
+          };
+          this.renderViewCallback(bounds);
+        }
       }
-      editableLayers2.addLayer(layer);
     });
   }
 
   plotActivities(activities) {
-    console.log('plot', activities);
     const pointOptions = {
       color: 'red',
       // fillColor: '#f03',
@@ -117,7 +129,5 @@ export default class MapViewer extends BaseComponent {
         const circle = L.circle(latLon, pointOptions).addTo(this.leafletMap);
       });
     });
-    // L.control.layers(baseMaps, overlayMaps).addTo(map);
   }
-
 }

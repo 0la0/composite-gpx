@@ -1,6 +1,8 @@
 const UUID_TEMPLATE = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
 const XY_REGEX = /[xy]/g;
 
+export const TWO_PI = 2 * Math.PI;
+
 export function getPosNeg() {
   return Math.random() < 0.5 ? -1 : 1;
 }
