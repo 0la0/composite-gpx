@@ -70,7 +70,11 @@ class ProfileService {
         };
       })
       .filter(activity => activity.points.length);
-      fs.writeFileSync(`${DIR.JSON}/${modifiedFileName}.app.json`, JSON.stringify(modifiedActivities));
+      const appFile = {
+        activities: modifiedActivities,
+        bounds,
+      };
+      fs.writeFileSync(`${DIR.JSON}/${modifiedFileName}.app.json`, JSON.stringify(appFile));
       return resolve();
     });
   }

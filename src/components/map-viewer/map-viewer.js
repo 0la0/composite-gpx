@@ -124,10 +124,12 @@ export default class MapViewer extends BaseComponent {
     };
     activities.forEach(activities => {
       const { points, } = activities;
-      points.forEach(point => {
-        const latLon = [point.lat, point.lon];
-        const circle = L.circle(latLon, pointOptions).addTo(this.leafletMap);
-      });
+      points
+        .filter((point, index) => index % 5 === 0)
+        .forEach(point => {
+          const latLon = [point.lat, point.lon];
+          const circle = L.circle(latLon, pointOptions).addTo(this.leafletMap);
+        });
     });
   }
 }
