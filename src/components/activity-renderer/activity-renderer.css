@@ -10,9 +10,6 @@
   width: 100%;
   height: 100%;
   background-color: var(--color-grey);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .canvas {
@@ -31,16 +28,19 @@
                     linear-gradient(45deg, var(--color-grey) 25%, transparent 25%, transparent 75%, var(--color-grey) 75%, var(--color-grey));
 }
 
+.upper-left-controls {
+  position: fixed;
+  top: 0;
+  right: 0;
+  color: var(--color-black);
+}
+
 .activity-viewer {
   background-color: #CCCCCC88;
-  position: fixed;
   border-left: 1px solid var(--color-grey-dark);
   border-bottom: 1px solid var(--color-grey-dark);
   border-radius: 0 0 0 4px;
-  top: 0;
-  right: 0;
   padding: 12px;
-  color: var(--color-black);
 }
 
 .title {
@@ -60,7 +60,7 @@
   display: block;
 }
 
-.control-buttons {
+.zoom-buttons {
   background-color: #CCCCCC88;
   position: fixed;
   border-left: 1px solid var(--color-grey-dark);
@@ -72,7 +72,7 @@
   color: var(--color-black);
 }
 
-.control-button {
+.zoom-button {
   background-color: var(--color-grey-light);
   border: 1px solid var(--color-grey-dark);
   border-radius: 50%;
@@ -81,4 +81,9 @@
   margin: 0 4px;
   font-size: 24px;
   cursor: pointer;
+}
+
+.zoom-display {
+  margin-bottom: 4px;
+  text-align: center;
 }

@@ -3,6 +3,7 @@ import Primitives from '../primitives';
 import ActivityEditor from '../activity-editor/activity-editor.js';
 import ActivityRenderer from '../activity-renderer/activity-renderer.js';
 import MapViewer from '../map-viewer/map-viewer.js';
+import RenderControls2d from '../render-controls-2d/render-controls-2d.js';
 
 const components = [
   Primitives.TextButton,
@@ -17,6 +18,7 @@ const components = [
   ActivityEditor,
   ActivityRenderer,
   MapViewer,
+  RenderControls2d,
 ];
 
 export default function init() {

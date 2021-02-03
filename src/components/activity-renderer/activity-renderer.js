@@ -1,6 +1,6 @@
 import BaseComponent from '../primitives/util/base-component.js';
 import ProfileService from '../../services/ProfileService.js';
-import { TWO_PI, } from '../../services/Math.js';
+import { getPosNeg, TWO_PI, } from '../../services/Math.js';
 import markup from './activity-renderer.html';
 import styles from './activity-renderer.css';
 
@@ -21,7 +21,7 @@ export default class ActivityRenderer extends BaseComponent {
   }
 
   constructor() {
-    super(styles, markup, [ 'canvas', 'activities', 'zoomin', 'zoomout', ]);
+    super(styles, markup, [ 'canvas', 'activities', 'zoomin', 'zoomout', 'zoomdisplay' ]);
     this.profileService = new ProfileService();
     this.profileData = {
       bounds: {},
@@ -36,6 +36,7 @@ export default class ActivityRenderer extends BaseComponent {
       this.setZoom();
     });
     this.zoom = 0.5;
+    this.aspectRatio = 1;
   }
 
   connectedCallback() {
@@ -47,9 +48,11 @@ export default class ActivityRenderer extends BaseComponent {
   }
 
   setZoom() {
-    const zoom = `${this.zoom * 100}%`;
-    this.dom.canvas.style.setProperty('width', zoom);
-    this.dom.canvas.style.setProperty('height', zoom);
+    const width = `${this.zoom * this.aspectRatio * 100}%`;
+    const height = `${this.zoom * (1 / this.aspectRatio) * 100}%`;
+    this.dom.canvas.style.setProperty('width', width);
+    this.dom.canvas.style.setProperty('height', height);
+    this.dom.zoomdisplay.innerText = `${Math.round(this.zoom * 100)}%`;
   }
 
   initCanvas() {
@@ -60,12 +63,15 @@ export default class ActivityRenderer extends BaseComponent {
 
   render() {
     const { bounds, activities, } = this.profileData;
-    const aspectRatio = (bounds.maxlon - bounds.minlon) / (bounds.maxlat - bounds.minlat);
+    this.aspectRatio = (bounds.maxlon - bounds.minlon) / (bounds.maxlat - bounds.minlat);
+    this.setZoom();
 
-    const adjustedWidth = DIMS.WIDTH * aspectRatio;
+    const adjustedWidth = DIMS.WIDTH * this.aspectRatio;
+    const adjustedHeight = DIMS.HEIGHT * (1 / this.aspectRatio);
     this.dom.canvas.width = adjustedWidth;
+    this.dom.canvas.height = adjustedHeight;
     this.ctx.fillStyle = 'white';
-    this.ctx.fillRect(0, 0, this.dom.canvas.width, this.dom.canvas.height);
+    this.ctx.fillRect(0, 0, adjustedWidth, adjustedHeight);
     this.ctx.fillStyle = 'rgba(150, 150, 150, 0.5)';
     this.ctx.strokeStyle = 'rgba(0, 0, 250, 0.5)';
     this.ctx.lineCap = 'round';
@@ -74,22 +80,17 @@ export default class ActivityRenderer extends BaseComponent {
     // this.ctx.shadowColor = 'rgba(0, 0, 250, 0.5)';
     // this.ctx.shadowBlur = 20;
 
-    
-    const pointRadius = 0.1;
-    // const jitter = () => {
-    //   const sign = Math.random() > 0.5 ? -1 : 1;
-    //   return sign * 1 * Math.random();
-    // }; 
+    // const jitter = (magnitude) => getPosNeg() * magnitude * Math.random(); 
     activities.forEach(activity => {
       const points = activity.points;
       this.ctx.beginPath();
       points
         // .filter((ele, index) => index % 10 === 0)
         .forEach((point, index) => {
-          const adjustedLat = point.lat * DIMS.WIDTH;
-          const adjustedLon = point.lon * DIMS.HEIGHT;
+          const adjustedLat = point.lat * adjustedHeight;
+          const adjustedLon = point.lon * adjustedWidth;
           // this.ctx.beginPath();
-          // this.ctx.arc(adjustedLon, adjustedLat, pointRadius, 0, TWO_PI);
+          // this.ctx.arc(adjustedLon, adjustedLat, 0.1, 0, TWO_PI);
           // this.ctx.fill();
 
           if (index === 0) {
