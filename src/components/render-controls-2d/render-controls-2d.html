@@ -1,21 +1,116 @@
-<p>TODO:</p>
+<div class="settings-row">
+  <label class="setting-label" for="canvasWidth">Canvas Width</label>
+  <text-input
+    id="canvasWidth"
+    type="number"
+    value="1000"
+    change="handleWidthChange"
+    min="10"
+    textAlign="left"
+  >
+  </text-input>
+</div>
 
-<p>Canvas Width</p>
-<p>Canvas Height</p>
+<div class="settings-row">
+  <label class="setting-label" for="canvasHeight">Canvas Height</label>
+  <text-input
+    id="canvasHeight"
+    type="number"
+    value="1000"
+    change="handleHeightChange"
+    min="10"
+    textAlign="left"
+  >
+  </text-input>
+</div>
 
-<p>Fill Color</p>
-<p>Stroke Color</p>
-<p>Stroke Width</p>
-<p>Shadow Color</p>
-<p>Shadow Spread</p>
+<div class="settings-row">
+  <label class="setting-label" for="fillColor">Fill Color</label>
+  <input
+    type="color"
+    id="fillColor"
+    name="fill"
+    value="#000000"
+    onChange="handleFillColorChange"
+  >
+</div>
 
-<p>Jitter</p>
+<div class="settings-row">
+  <label class="setting-label" for="strokeColor">Stroke Color</label>
+</div>
+
+<div class="settings-row">
+  <label class="setting-label" for="strokeWidth">Stroke Width</label>
+  <text-input
+    id="strokeWidth"
+    type="number"
+    value="2"
+    change="handleStrokeWidthChange"
+    min="0"
+    textAlign="left"
+  >
+  </text-input>
+</div>
+
+<div class="settings-row">
+  <label class="setting-label" for="shadowColor">Shadow Color</label>
+</div>
+
+<div class="settings-row">
+  <label class="setting-label" for="shadowSpread">Shadow Spread</label>
+  <text-input
+    id="shadowSpread"
+    type="number"
+    value="2"
+    change="handleShadowSpreadChange"
+    min="0"
+    textAlign="left"
+  >
+  </text-input>
+</div>
+
+<div class="settings-row">
+  <label class="setting-label" for="jitter">Jitter</label>
+  <text-input
+    id="jitter"
+    type="number"
+    value="0"
+    change="handleJitterChange"
+    min="0"
+    textAlign="left"
+  >
+  </text-input>
+</div>
+
 <p>Elevation to Color</p>
-<p>Skip every n points</p>
+
+<div class="settings-row">
+  <label class="setting-label" for="skipPoints">Skip Every</label>
+  <text-input
+    id="skipPoints"
+    type="number"
+    value="0"
+    change="handleSkipPointChange"
+    min="0"
+    textAlign="left"
+  >
+  </text-input>
+</div>
 
 <p>Render Mode: point / line</p>
 
 <!-- Point Specific Params -->
-<p>Radius</p>
+<div class="settings-row">
+  <label class="setting-label" for="radius">Point Radius</label>
+  <text-input
+    id="radius"
+    type="number"
+    value="0"
+    change="handleRadiusChange"
+    min="0"
+    textAlign="left"
+  >
+  </text-input>
+</div>
 
 <p>Animation Options</p>

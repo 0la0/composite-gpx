@@ -10,9 +10,10 @@ const DIMS = {
 };
 
 const ZOOM = {
-  MIN: 0.1,
-  MAX: 2,
-  STEP: 0.1,
+  MIN: 0.05,
+  MAX: 1,
+  STEP: 0.025,
+  DEFAULT: 0.15,
 };
 
 export default class ActivityRenderer extends BaseComponent {
@@ -35,7 +36,7 @@ export default class ActivityRenderer extends BaseComponent {
       this.zoom = Math.max(this.zoom - ZOOM.STEP, ZOOM.MIN);
       this.setZoom();
     });
-    this.zoom = 0.5;
+    this.zoom = ZOOM.DEFAULT;
     this.aspectRatio = 1;
   }
 
@@ -48,8 +49,11 @@ export default class ActivityRenderer extends BaseComponent {
   }
 
   setZoom() {
-    const width = `${this.zoom * this.aspectRatio * 100}%`;
-    const height = `${this.zoom * (1 / this.aspectRatio) * 100}%`;
+    // TODO: don't use percents
+    // const width = `${this.zoom * this.aspectRatio * 100}%`;
+    // const height = `${this.zoom * (1 / this.aspectRatio) * 100}%`;
+    const width = `${this.dom.canvas.width * this.zoom}px`;
+    const height = `${this.dom.canvas.height * this.zoom}px`;
     this.dom.canvas.style.setProperty('width', width);
     this.dom.canvas.style.setProperty('height', height);
     this.dom.zoomdisplay.innerText = `${Math.round(this.zoom * 100)}%`;
@@ -64,12 +68,12 @@ export default class ActivityRenderer extends BaseComponent {
   render() {
     const { bounds, activities, } = this.profileData;
     this.aspectRatio = (bounds.maxlon - bounds.minlon) / (bounds.maxlat - bounds.minlat);
-    this.setZoom();
 
     const adjustedWidth = DIMS.WIDTH * this.aspectRatio;
     const adjustedHeight = DIMS.HEIGHT * (1 / this.aspectRatio);
     this.dom.canvas.width = adjustedWidth;
     this.dom.canvas.height = adjustedHeight;
+    this.setZoom();
     this.ctx.fillStyle = 'white';
     this.ctx.fillRect(0, 0, adjustedWidth, adjustedHeight);
     this.ctx.fillStyle = 'rgba(150, 150, 150, 0.5)';

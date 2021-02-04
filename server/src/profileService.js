@@ -1,7 +1,6 @@
 import fs from 'fs';
 import { DIR, FILE_TYPE, } from './util.js';
 
-
 // bounds: { minlat, minlon, maxlat, maxlon }
 const transformPoint = ({ lat, lon,}, bounds) => {
   const latRange = bounds.maxlat - bounds.minlat;
