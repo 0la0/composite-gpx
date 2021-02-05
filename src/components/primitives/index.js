@@ -1,3 +1,4 @@
+import ColorInput from './color-input/color-input.js';
 import ComboBox from './combo-box';
 import ExpandableSection from './expandable-section';
 import RouterOutlet from './Router/router-outlet';
@@ -8,6 +9,7 @@ import ToastNotifcation from './toast-notification';
 import ToggleButton from './toggle-button';
 
 export default {
+  ColorInput,
   ComboBox,
   ExpandableSection,
   RouterOutlet,

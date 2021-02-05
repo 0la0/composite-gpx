@@ -1,116 +1,119 @@
-<div class="settings-row">
-  <label class="setting-label" for="canvasWidth">Canvas Width</label>
-  <text-input
-    id="canvasWidth"
-    type="number"
-    value="1000"
-    change="handleWidthChange"
-    min="10"
-    textAlign="left"
-  >
-  </text-input>
-</div>
+<label class="setting-label" for="canvasWidth">Canvas Width</label>
+<text-input
+  id="canvasWidth"
+  type="number"
+  value="1000"
+  change="handleWidthChange"
+  min="10"
+  textAlign="left"
+>
+</text-input>
 
-<div class="settings-row">
-  <label class="setting-label" for="canvasHeight">Canvas Height</label>
-  <text-input
-    id="canvasHeight"
-    type="number"
-    value="1000"
-    change="handleHeightChange"
-    min="10"
-    textAlign="left"
-  >
-  </text-input>
-</div>
+<label class="setting-label" for="canvasHeight">Canvas Height</label>
+<text-input
+  id="canvasHeight"
+  type="number"
+  value="1000"
+  change="handleHeightChange"
+  min="10"
+  textAlign="left"
+>
+</text-input>
 
-<div class="settings-row">
-  <label class="setting-label" for="fillColor">Fill Color</label>
-  <input
-    type="color"
-    id="fillColor"
-    name="fill"
-    value="#000000"
-    onChange="handleFillColorChange"
-  >
-</div>
+<label class="setting-label" for="fillColor">Fill Color</label>
+<color-input
+  id="fillColor"
+  name="fill"
+  value="#0000FF"
+  change="handleFillColorChange"
+>
+</color-input>
 
-<div class="settings-row">
-  <label class="setting-label" for="strokeColor">Stroke Color</label>
-</div>
+<label class="setting-label" for="strokeColor">Stroke Color</label>
+<color-input
+  id="strokeColor"
+  name="strokeColor"
+  value="#FF00FF"
+  change="handleStrokeColorChange"
+>
+</color-input>
 
-<div class="settings-row">
-  <label class="setting-label" for="strokeWidth">Stroke Width</label>
-  <text-input
-    id="strokeWidth"
-    type="number"
-    value="2"
-    change="handleStrokeWidthChange"
-    min="0"
-    textAlign="left"
-  >
-  </text-input>
-</div>
+<label class="setting-label" for="strokeWidth">Stroke Width</label>
+<text-input
+  id="strokeWidth"
+  type="number"
+  value="2"
+  change="handleStrokeWidthChange"
+  min="0"
+  textAlign="left"
+>
+</text-input>
 
-<div class="settings-row">
-  <label class="setting-label" for="shadowColor">Shadow Color</label>
-</div>
+<label class="setting-label" for="shadowColor">Shadow Color</label>
+<color-input
+  id="shadowColor"
+  name="shadow"
+  value="#00FF00"
+  change="handleStrokeColorChange"
+>
+</color-input>
 
-<div class="settings-row">
-  <label class="setting-label" for="shadowSpread">Shadow Spread</label>
-  <text-input
-    id="shadowSpread"
-    type="number"
-    value="2"
-    change="handleShadowSpreadChange"
-    min="0"
-    textAlign="left"
-  >
-  </text-input>
-</div>
+<label class="setting-label" for="shadowSpread">Shadow Spread</label>
+<text-input
+  id="shadowSpread"
+  type="number"
+  value="2"
+  change="handleShadowSpreadChange"
+  min="0"
+  textAlign="left"
+>
+</text-input>
 
-<div class="settings-row">
-  <label class="setting-label" for="jitter">Jitter</label>
-  <text-input
-    id="jitter"
-    type="number"
-    value="0"
-    change="handleJitterChange"
-    min="0"
-    textAlign="left"
-  >
-  </text-input>
-</div>
+<label class="setting-label" for="jitter">Jitter</label>
+<text-input
+  id="jitter"
+  type="number"
+  value="0"
+  change="handleJitterChange"
+  min="0"
+  textAlign="left"
+>
+</text-input>
 
-<p>Elevation to Color</p>
+<label class="setting-label" for="skipPoints">Skip Every</label>
+<text-input
+  id="skipPoints"
+  type="number"
+  value="0"
+  change="handleSkipPointChange"
+  min="0"
+  textAlign="left"
+>
+</text-input>
 
-<div class="settings-row">
-  <label class="setting-label" for="skipPoints">Skip Every</label>
-  <text-input
-    id="skipPoints"
-    type="number"
-    value="0"
-    change="handleSkipPointChange"
-    min="0"
-    textAlign="left"
-  >
-  </text-input>
-</div>
+<label class="setting-label" for="renderPoint">Render Point</label>
+<toggle-button
+  id="renderPoint"
+  click="handleRenderPointToggle"
+  onlabel="On"
+  offlabel="Off">
+</toggle-button>
 
-<p>Render Mode: point / line</p>
+<label class="setting-label" for="renderLine">Render Line</label>
+<toggle-button
+  id="renderLine"
+  click="handleRenderLineToggle"
+  onlabel="On"
+  offlabel="Off">
+</toggle-button>
 
-<!-- Point Specific Params -->
-<div class="settings-row">
-  <label class="setting-label" for="radius">Point Radius</label>
-  <text-input
-    id="radius"
-    type="number"
-    value="0"
-    change="handleRadiusChange"
-    min="0"
-    textAlign="left"
-  >
-  </text-input>
-</div>
-
-<p>Animation Options</p>
+<label class="setting-label" for="radius">Point Radius</label>
+<text-input
+  id="radius"
+  type="number"
+  value="0"
+  change="handleRadiusChange"
+  min="0"
+  textAlign="left"
+>
+</text-input>

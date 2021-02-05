@@ -22,7 +22,7 @@ export default class ActivityRenderer extends BaseComponent {
   }
 
   constructor() {
-    super(styles, markup, [ 'canvas', 'activities', 'zoomin', 'zoomout', 'zoomdisplay' ]);
+    super(styles, markup, [ 'canvas', 'activities', 'rendercontrols', 'zoomin', 'zoomout', 'zoomdisplay' ]);
     this.profileService = new ProfileService();
     this.profileData = {
       bounds: {},
@@ -49,14 +49,16 @@ export default class ActivityRenderer extends BaseComponent {
   }
 
   setZoom() {
-    // TODO: don't use percents
-    // const width = `${this.zoom * this.aspectRatio * 100}%`;
-    // const height = `${this.zoom * (1 / this.aspectRatio) * 100}%`;
     const width = `${this.dom.canvas.width * this.zoom}px`;
     const height = `${this.dom.canvas.height * this.zoom}px`;
     this.dom.canvas.style.setProperty('width', width);
     this.dom.canvas.style.setProperty('height', height);
     this.dom.zoomdisplay.innerText = `${Math.round(this.zoom * 100)}%`;
+  }
+
+  handleRenderButtonClick() {
+    const renderOptions = this.dom.rendercontrols.getRenderOptions();
+    console.log('Render with options:', renderOptions);
   }
 
   initCanvas() {

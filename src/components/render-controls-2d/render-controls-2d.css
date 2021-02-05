@@ -4,14 +4,10 @@
   color: var(--color-grey-light);
   font-size: 16px;
   padding: 4px;
-}
-
-.settings-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  margin: 8px 0;
+  display: grid;
+  grid-template-columns: 150px 80px;
+  grid-gap: 12px 4px;
+  align-items: end;
 }
 
 .setting-label {

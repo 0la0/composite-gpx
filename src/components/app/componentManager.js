@@ -8,6 +8,7 @@ import RenderControls2d from '../render-controls-2d/render-controls-2d.js';
 const components = [
   Primitives.TextButton,
   Primitives.ToggleButton,
+  Primitives.ColorInput,
   Primitives.ComboBox,
   Primitives.ExpandableSection,
   Primitives.SliderHorizontal,
