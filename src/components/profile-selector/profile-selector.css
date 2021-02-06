@@ -1,0 +1,30 @@
+
+.profile-viewer {
+  background-color: #CCCCCC88;
+  border-left: 1px solid var(--color-grey-dark);
+  border-bottom: 1px solid var(--color-grey-dark);
+  border-radius: 0 0 0 4px;
+  padding: 12px;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.profile-button {
+  background: unset;
+  background-color: var(--color-grey-light);
+  border: 1px solid black;
+  border-radius: 4px;
+  outline: unset;
+  margin: 8px;
+  padding: 4px;
+  cursor: pointer;
+  display: block;
+}
+
+.profile-active {
+  border: 2px solid var(--color-accent);
+  background-color: var(--color-white);
+}

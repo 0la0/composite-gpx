@@ -23,15 +23,15 @@ const webpackConfig = {
     rules: [
       {
         test: /\.css$|\.html$|\.worker.js$|\.vert$|\.frag$/,
-        exclude: [
-          {
-            test: path.resolve(__dirname, 'node_modules'),
-            exclude: [
-              path.resolve(__dirname, 'node_modules/leaflet/dist/leaflet.css'),
-              path.resolve(__dirname, 'node_modules/leaflet-draw/dist/leaflet.draw.css')
-            ]
-          }
-        ],
+        // exclude: [
+        //   {
+        //     test: path.resolve(__dirname, 'node_modules'),
+        //     exclude: [
+        //       path.resolve(__dirname, 'node_modules/leaflet/dist/leaflet.css'),
+        //       path.resolve(__dirname, 'node_modules/leaflet-draw/dist/leaflet.draw.css')
+        //     ]
+        //   }
+        // ],
         loader: 'raw-loader'
       },
     ]

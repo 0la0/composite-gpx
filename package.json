@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "clean": "rm -rf dist",
-    "start:web": "webpack-dev-server --mode=development --inline --colors --progress",
+    "start:web": "webpack serve --mode=development --inline --progress",
     "start:server": "cd server; npm start",
     "start": "npm run start:server & npm run start:web",
     "test": "NODE_PATH=./src/app mocha -r esm test/**/*.test.js",
@@ -13,13 +13,13 @@
   },
   "devDependencies": {
     "copy-webpack-plugin": "6.1.0",
-    "eslint": "^7.0.0-alpha.3",
+    "eslint": "^7.19.0",
     "esm": "^3.2.22",
     "mocha": "^7.1.1",
-    "raw-loader": "^4.0.1",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "raw-loader": "^4.0.2",
+    "webpack": "^5.21.1",
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
     "leaflet": "^1.7.1",

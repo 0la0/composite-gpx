@@ -1,5 +1,4 @@
 import BaseComponent from '../primitives/util/base-component.js';
-import ProfileService from '../../services/ProfileService.js';
 import { getPosNeg, TWO_PI, } from '../../services/Math.js';
 import markup from './activity-renderer.html';
 import styles from './activity-renderer.css';
@@ -17,8 +16,7 @@ export default class ActivityRenderer extends BaseComponent {
   }
 
   constructor() {
-    super(styles, markup, [ 'canvas', 'activities', 'rendercontrols', 'zoomin', 'zoomout', 'zoomdisplay' ]);
-    this.profileService = new ProfileService();
+    super(styles, markup, [ 'canvas', 'profileselector', 'rendercontrols', 'zoomin', 'zoomout', 'zoomdisplay' ]);
     this.profileData = {
       bounds: {},
       activities: [],
@@ -42,9 +40,6 @@ export default class ActivityRenderer extends BaseComponent {
   connectedCallback() {
     this.initCanvas();
     this.setZoom();
-    this.profileService.getRenderViews()
-      .then(response => this.renderProfileMenu(response.views))
-      .catch(error => console.log(error));
   }
 
   setZoom() {
@@ -56,6 +51,7 @@ export default class ActivityRenderer extends BaseComponent {
   }
 
   handleRenderButtonClick() {
+    this.profileData = this.dom.profileselector.getProfileData();
     this.renderOptions = this.dom.rendercontrols.getRenderOptions();
     this.render();
   }
@@ -110,7 +106,6 @@ export default class ActivityRenderer extends BaseComponent {
           });
       }
 
-
       if (this.renderOptions.renderLine) {
         this.ctx.beginPath();
         points
@@ -129,32 +124,5 @@ export default class ActivityRenderer extends BaseComponent {
       }
       
     });
-  }
-
-  renderProfileMenu(views) {
-    requestAnimationFrame(() => {
-      this.activeNewName = '';
-      [...this.dom.activities.children].forEach(child => this.dom.activities.removeChild(child));
-      views.forEach(profile => {
-        const viewButton = document.createElement('button');
-        viewButton.classList.add('profile-button');
-        viewButton.innerText = profile;
-        viewButton.addEventListener('click', () => this.loadView(profile));
-        this.dom.activities.appendChild(viewButton);
-      });
-    });
-  }
-
-  loadView(name) {
-    this.profileService.getRenderView(name)
-      .then(response => {
-        if (!response) {
-          throw new Error('No activities', response);
-        }
-        this.activeViewName = name;
-        this.profileData = response;
-        this.render();
-      })
-      .catch(error => console.log(error));
   }
 }
