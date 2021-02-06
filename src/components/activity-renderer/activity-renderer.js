@@ -10,6 +10,8 @@ const ZOOM = {
   DEFAULT: 0.15,
 };
 
+const jitter = (magnitude) => getPosNeg() * magnitude * Math.random(); 
+
 export default class ActivityRenderer extends BaseComponent {
   static get tag() {
     return 'activity-renderer';
@@ -91,38 +93,46 @@ export default class ActivityRenderer extends BaseComponent {
     // this.ctx.shadowColor = 'rgba(0, 0, 250, 0.5)';
     // this.ctx.shadowBlur = 20;
 
-    // const jitter = (magnitude) => getPosNeg() * magnitude * Math.random(); 
+    const calculateAdjustedPoint = (point) => {
+      if (this.renderOptions.jitter) {
+        return {
+          lat: point.lat * adjustedHeight + jitter(this.renderOptions.jitter),
+          lon: point.lon * adjustedWidth + jitter(this.renderOptions.jitter),
+        };
+      } else {
+        return {
+          lat: point.lat * adjustedHeight,
+          lon: point.lon * adjustedWidth,
+        };
+      }
+    };
+
     activities.forEach(activity => {
       const points = activity.points;
-
       if (this.renderOptions.renderPoint) {
         points
           .forEach((point) => {
-            const adjustedLat = point.lat * adjustedHeight;
-            const adjustedLon = point.lon * adjustedWidth;
+            const { lat, lon, } = calculateAdjustedPoint(point);
             this.ctx.beginPath();
-            this.ctx.arc(adjustedLon, adjustedLat, this.renderOptions.radius, 0, TWO_PI);
+            this.ctx.arc(lon, lat, this.renderOptions.radius, 0, TWO_PI);
             this.ctx.fill();
           });
       }
-
       if (this.renderOptions.renderLine) {
         this.ctx.beginPath();
         points
           .forEach((point, index) => {
-            const adjustedLat = point.lat * adjustedHeight;
-            const adjustedLon = point.lon * adjustedWidth;
+            const { lat, lon, } = calculateAdjustedPoint(point);
             if (index === 0) {
-              this.ctx.moveTo(adjustedLon, adjustedLat);
+              this.ctx.moveTo(lon, lat);
             } else {
-              this.ctx.lineTo(adjustedLon, adjustedLat);
+              this.ctx.lineTo(lon, lat);
             }
             if (index === points.length -1) {
               this.ctx.stroke();
             }
           });
       }
-      
     });
   }
 }

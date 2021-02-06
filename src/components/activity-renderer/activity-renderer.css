@@ -62,3 +62,7 @@
   margin-bottom: 4px;
   text-align: center;
 }
+
+.render-button {
+  background-color: var(--color-grey-darker);
+}

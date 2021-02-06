@@ -1,4 +1,5 @@
 import BaseComponent from '../primitives/util/base-component.js';
+import PersistedStore from '../../services/PersistedStore.js';
 import markup from './render-controls-2d.html';
 import styles from './render-controls-2d.css';
 
@@ -18,6 +19,10 @@ const defaultModel = {
   radius: 1,
 };
 
+const Constants = {
+  STORE_KEY: 'RENDER_2D_OPTIONS',
+};
+
 export default class RenderControls2d extends BaseComponent {
   static get tag() {
     return 'render-controls-2d';
@@ -25,7 +30,9 @@ export default class RenderControls2d extends BaseComponent {
 
   constructor() {
     super(styles, markup, Object.keys(defaultModel));
-    this.model = { ...defaultModel, };
+    this.persistedStore = new PersistedStore();
+    const persistedModel = this.persistedStore.getObjectFromStorage(Constants.STORE_KEY);
+    this.model = Object.keys(persistedModel).length ? persistedModel : { ...defaultModel, };
   }
 
   connectedCallback() {
@@ -41,16 +48,17 @@ export default class RenderControls2d extends BaseComponent {
 
   setModelProperty(key, value) {
     this.model[key] = value;
+    this.persistedStore.storeObject(Constants.STORE_KEY, this.model);
   }
 
   handleWidthChange(event) {
     const width = parseInt(event.target.value, 10);
-    this.setModelProperty('width', width);
+    this.setModelProperty('canvasWidth', width);
   }
 
   handleHeightChange(event) {
     const height = parseInt(event.target.value, 10);
-    this.setModelProperty('height', height);
+    this.setModelProperty('canvasHeight', height);
   }
 
   handleCanvasColorChange(event) {

@@ -33,7 +33,6 @@ export default class ToggleButton extends BaseComponent {
     this.onText = this.getAttribute('onlabel') || '';
     this.offText = this.getAttribute('offlabel') || '';
     this.isOn = this.getAttribute('ison') === 'true' || this.getAttribute('value') === 'true';
-    console.log(this.getAttribute('value'), this.isOn)
     this.render();
   }
 
