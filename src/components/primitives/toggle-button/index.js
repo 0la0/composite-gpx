@@ -18,6 +18,10 @@ export default class ToggleButton extends BaseComponent {
     return 'toggle-button';
   }
 
+  static get observedAttributes() {
+    return [ 'value', ];
+  }
+
   constructor() {
     super(style, markup, ['button']);
     this.isOn = false;
@@ -28,7 +32,8 @@ export default class ToggleButton extends BaseComponent {
     this.addEventListener('click', this.handleClick.bind(this));
     this.onText = this.getAttribute('onlabel') || '';
     this.offText = this.getAttribute('offlabel') || '';
-    this.isOn =  this.getAttribute('ison') === 'true';
+    this.isOn = this.getAttribute('ison') === 'true' || this.getAttribute('value') === 'true';
+    console.log(this.getAttribute('value'), this.isOn)
     this.render();
   }
 
@@ -54,5 +59,12 @@ export default class ToggleButton extends BaseComponent {
       this.dom.button.classList.add(BUTTON_ACTIVE) :
       this.dom.button.classList.remove(BUTTON_ACTIVE);
     this.dom.button.innerText = this.isOn ? this.onText : this.offText;
+  }
+
+  attributeChangedCallback(attrName, oldVal, newVal) {
+    if (attrName === 'value') {
+      this.isOn = newVal === 'true';
+      this.render();
+    }
   }
 }
