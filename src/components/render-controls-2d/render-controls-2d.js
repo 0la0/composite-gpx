@@ -4,19 +4,66 @@ import markup from './render-controls-2d.html';
 import styles from './render-controls-2d.css';
 
 const defaultModel = {
-  canvasWidth: 4000,
-  canvasHeight: 4000,
-  canvasColor: '#FFFFFF',
-  fillColor: '#FF0000',
-  strokeColor: '#449944',
-  strokeWidth: 2,
-  shadowColor: null,
-  shadowSpread: 0,
-  jitter: 0,
-  skipPoints: 0,
-  renderPoint: false,
-  renderLine: true,
-  radius: 1,
+  canvasSize: {
+    type: 'number',
+    value: 4000,
+  },
+  canvasColor: {
+    type: 'string',
+    value: '#FFFFFF',
+  },
+  fillColor: {
+    type: 'string',
+    value: '#FF0000',
+  },
+  fillAlpha: {
+    type: 'number',
+    value: 1,
+  },
+  strokeColor: {
+    type: 'string',
+    value: '#000000',
+  },
+  strokeAlpha: {
+    type: 'number',
+    value: 1,
+  },
+  strokeWidth: {
+    type: 'number',
+    value: 2,
+  },
+  shadowColor: {
+    type: 'string',
+    value: '#000000',
+  },
+  shadowAlpha: {
+    type: 'number',
+    value: 1,
+  },
+  shadowSpread: {
+    type: 'number',
+    value: 0,
+  },
+  jitter: {
+    type: 'number',
+    value: 0,
+  },
+  skipPoints: {
+    type: 'number',
+    value: 0,
+  },
+  renderPoint: {
+    type: 'boolean',
+    value: false,
+  },
+  renderLine: {
+    type: 'boolean',
+    value: true,
+  },
+  radius: {
+    type: 'number',
+    value: 1,
+  },
 };
 
 const Constants = {
@@ -37,76 +84,24 @@ export default class RenderControls2d extends BaseComponent {
 
   connectedCallback() {
     Object.keys(this.model).forEach(key => {
-      const value = this.model[key];
-      this.dom[key].setAttribute('value', value);
+      const property = this.model[key];
+      this.dom[key]?.setAttribute('value', property.value);
     });
   }
 
   getRenderOptions() {
     return this.model;
-  } 
+  }
 
-  setModelProperty(key, value) {
-    this.model[key] = value;
+  setModelProperty(event) {
+    const id = event.target.id;
+    const value = event.target.value;
+    if (this.model[id]?.type === 'number') {
+      const parsedValue = parseFloat(value, 10);
+      this.model[id].value = parsedValue;
+    } else {
+      this.model[id].value = value;
+    }
     this.persistedStore.storeObject(Constants.STORE_KEY, this.model);
-  }
-
-  handleWidthChange(event) {
-    const width = parseInt(event.target.value, 10);
-    this.setModelProperty('canvasWidth', width);
-  }
-
-  handleHeightChange(event) {
-    const height = parseInt(event.target.value, 10);
-    this.setModelProperty('canvasHeight', height);
-  }
-
-  handleCanvasColorChange(event) {
-    this.setModelProperty('canvasColor', event.target.value);
-  }
-
-  handleStrokeWidthChange(event) {
-    const strokeWidth = parseFloat(event.target.value, 10);
-    this.setModelProperty('strokeWidth', strokeWidth);
-  }
-
-  handleShadowSpreadChange(event) {
-    const shadowSpread = parseFloat(event.target.value, 10);
-    this.setModelProperty('shadowSpread', shadowSpread);
-  }
-
-  handleJitterChange(event) {
-    const jitter = parseFloat(event.target.value, 10);
-    this.setModelProperty('jitter', jitter);
-  }
-
-  handleSkipPointChange(event) {
-    const skipPoints = parseInt(event.target.value, 10);
-    this.setModelProperty('skipPoints', skipPoints);
-  }
-
-  handleRadiusChange(event) {
-    const radius = parseFloat(event.target.value, 10);
-    this.setModelProperty('radius', radius);
-  }
-
-  handleFillColorChange(event) {
-    this.setModelProperty('fillColor', event.target.value);
-  }
-
-  handleStrokeColorChange(event) {
-    this.setModelProperty('strokeColor', event.target.value);
-  }
-
-  handleShadowColorChange(event) {
-    this.setModelProperty('shadowColor', event.target.value);
-  }
-
-  handleRenderPointToggle(event) {
-    this.setModelProperty('renderPoint', event.target.value);
-  }
-
-  handleRenderLineToggle(event) {
-    this.setModelProperty('renderLine', event.target.value);
   }
 }

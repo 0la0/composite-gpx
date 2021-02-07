@@ -19,7 +19,7 @@ export default class ToggleButton extends BaseComponent {
   }
 
   static get observedAttributes() {
-    return [ 'value', ];
+    return [ 'value', 'id', ];
   }
 
   constructor() {
@@ -64,6 +64,8 @@ export default class ToggleButton extends BaseComponent {
     if (attrName === 'value') {
       this.isOn = newVal === 'true';
       this.render();
+    } else {
+      this.dom.button.setAttribute(attrName, newVal);
     }
   }
 }

@@ -9,7 +9,7 @@ export default class ColorInput extends BaseComponent {
   }
 
   static get observedAttributes() {
-    return [ 'value', ];
+    return [ 'value', 'id', ];
   }
 
   constructor() {
@@ -46,6 +46,8 @@ export default class ColorInput extends BaseComponent {
   attributeChangedCallback(attrName, oldVal, newVal) {
     if (attrName === 'value') {
       this._setValue(newVal);
+    } else {
+      this.dom.colorinput.setAttribute(attrName, newVal);
     }
   }
 }

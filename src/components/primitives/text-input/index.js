@@ -5,15 +5,13 @@ import {
 } from '../util/dom';
 import style from './text-input.css';
 
-// const attributeReflectionList = [ 'type', 'value', 'min', 'max' ];
-
 export default class TextInput extends BaseComponent {
   static get tag() {
     return 'text-input';
   }
 
   static get observedAttributes() {
-    return [ 'type', 'value', 'min', 'max' ];
+    return [ 'type', 'value', 'min', 'max', 'id', ];
   }
 
   constructor() {

@@ -10,7 +10,15 @@ const ZOOM = {
   DEFAULT: 0.15,
 };
 
-const jitter = (magnitude) => getPosNeg() * magnitude * Math.random(); 
+const jitter = (magnitude) => getPosNeg() * magnitude * Math.random();
+
+const alphaFloatToHex = (num = 0) => {
+  const hexValue = Math.floor(num * 255).toString(16);
+  if (hexValue.length < 2) {
+    return `0${hexValue}`;
+  }
+  return hexValue;
+};
 
 export default class ActivityRenderer extends BaseComponent {
   static get tag() {
@@ -73,31 +81,38 @@ export default class ActivityRenderer extends BaseComponent {
     const { bounds, activities, } = this.profileData;
     this.aspectRatio = (bounds.maxlon - bounds.minlon) / (bounds.maxlat - bounds.minlat);
 
-    const adjustedWidth = this.renderOptions.canvasWidth * this.aspectRatio;
-    const adjustedHeight = this.renderOptions.canvasHeight * (1 / this.aspectRatio);
+    const adjustedWidth = this.renderOptions.canvasSize.value * this.aspectRatio;
+    const adjustedHeight = this.renderOptions.canvasSize.value * (1 / this.aspectRatio);
     this.dom.canvas.width = adjustedWidth;
     this.dom.canvas.height = adjustedHeight;
     this.setZoom();
 
     // TODO: parameterize background color
-    this.ctx.fillStyle = this.renderOptions.canvasColor;
+    this.ctx.fillStyle = this.renderOptions.canvasColor.value;
     this.ctx.fillRect(0, 0, adjustedWidth, adjustedHeight);
 
-    // TODO: parameterize color alpha
-    this.ctx.fillStyle = this.renderOptions.fillColor;
-    this.ctx.strokeStyle = this.renderOptions.strokeColor;
+    const fillAlphaHex = alphaFloatToHex(this.renderOptions.fillAlpha.value);
+    const fillStyle = `${this.renderOptions.fillColor.value}${fillAlphaHex}`;
+    this.ctx.fillStyle = fillStyle;
+
+    const strokeAlphaHex = alphaFloatToHex(this.renderOptions.strokeAlpha.value);  
+    const strokeStyle = `${this.renderOptions.strokeColor.value}${strokeAlphaHex}`;
+    this.ctx.strokeStyle = strokeStyle;
     
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
-    this.ctx.lineWidth = this.renderOptions.strokeWidth;
-    // this.ctx.shadowColor = 'rgba(0, 0, 250, 0.5)';
-    // this.ctx.shadowBlur = 20;
+    this.ctx.lineWidth = this.renderOptions.strokeWidth.value;
+
+    const shadowAlphaHex = alphaFloatToHex(this.renderOptions.shadowAlpha.value);  
+    const shadowStyle = `${this.renderOptions.shadowColor.value}${shadowAlphaHex}`;
+    this.ctx.shadowColor = shadowStyle;
+    this.ctx.shadowBlur = this.renderOptions.shadowSpread.value;
 
     const calculateAdjustedPoint = (point) => {
-      if (this.renderOptions.jitter) {
+      if (this.renderOptions.jitter.value) {
         return {
-          lat: point.lat * adjustedHeight + jitter(this.renderOptions.jitter),
-          lon: point.lon * adjustedWidth + jitter(this.renderOptions.jitter),
+          lat: point.lat * adjustedHeight + jitter(this.renderOptions.jitter.value),
+          lon: point.lon * adjustedWidth + jitter(this.renderOptions.jitter.value),
         };
       } else {
         return {
@@ -107,19 +122,33 @@ export default class ActivityRenderer extends BaseComponent {
       }
     };
 
-    activities.forEach(activity => {
-      const points = activity.points;
-      if (this.renderOptions.renderPoint) {
+    if (this.renderOptions.renderPoint.value) {
+      activities.forEach(activity => {
+        this.ctx.beginPath();
+        const points = activity.points;
         points
           .forEach((point) => {
             const { lat, lon, } = calculateAdjustedPoint(point);
-            this.ctx.beginPath();
-            this.ctx.arc(lon, lat, this.renderOptions.radius, 0, TWO_PI);
-            this.ctx.fill();
+            this.ctx.moveTo(lon, lat);
+            this.ctx.arc(lon, lat, this.renderOptions.radius.value, 0, TWO_PI);
           });
-      }
-      if (this.renderOptions.renderLine) {
+        this.ctx.fill();
+      });
+    }
+
+    if (this.renderOptions.renderLine.value) {
+      activities.forEach(activity => {
+
+        if (this.renderOptions.shadowSpread.value) {
+          const spread = this.renderOptions.shadowSpread.value + jitter(10);
+          const shadowBlur = Math.max(spread, this.renderOptions.shadowSpread.value);
+          // console.log(shadowBlur);
+          this.ctx.shadowBlur = shadowBlur;
+        }
+
+
         this.ctx.beginPath();
+        const points = activity.points;
         points
           .forEach((point, index) => {
             const { lat, lon, } = calculateAdjustedPoint(point);
@@ -128,11 +157,9 @@ export default class ActivityRenderer extends BaseComponent {
             } else {
               this.ctx.lineTo(lon, lat);
             }
-            if (index === points.length -1) {
-              this.ctx.stroke();
-            }
           });
-      }
-    });
+        this.ctx.stroke();
+      });
+    }
   }
 }

@@ -1,20 +1,9 @@
-<label class="setting-label" for="canvasWidth">Canvas Width</label>
+<label class="setting-label" for="canvasSize">Canvas Size (sq)</label>
 <text-input
-  id="canvasWidth"
+  id="canvasSize"
   type="number"
   value="1000"
-  change="handleWidthChange"
-  min="10"
-  textAlign="left"
->
-</text-input>
-
-<label class="setting-label" for="canvasHeight">Canvas Height</label>
-<text-input
-  id="canvasHeight"
-  type="number"
-  value="1000"
-  change="handleHeightChange"
+  change="setModelProperty"
   min="10"
   textAlign="left"
 >
@@ -25,7 +14,7 @@
   id="canvasColor"
   name="fill"
   value="#FFFFFF"
-  change="handleCanvasColorChange"
+  change="setModelProperty"
 >
 </color-input>
 
@@ -34,25 +23,49 @@
   id="fillColor"
   name="fill"
   value="#0000FF"
-  change="handleFillColorChange"
+  change="setModelProperty"
 >
 </color-input>
+
+<label class="setting-label" for="fillAlpha">Fill Alpha</label>
+<text-input
+  id="fillAlpha"
+  type="number"
+  value="1"
+  change="setModelProperty"
+  min="0"
+  max="1"
+  textAlign="left"
+>
+</text-input>
 
 <label class="setting-label" for="strokeColor">Stroke Color</label>
 <color-input
   id="strokeColor"
   name="strokeColor"
   value="#FF00FF"
-  change="handleStrokeColorChange"
+  change="setModelProperty"
 >
 </color-input>
+
+<label class="setting-label" for="strokeAlpha">Stroke Alpha</label>
+<text-input
+  id="strokeAlpha"
+  type="number"
+  value="1"
+  change="setModelProperty"
+  min="0"
+  max="1"
+  textAlign="left"
+>
+</text-input>
 
 <label class="setting-label" for="strokeWidth">Stroke Width</label>
 <text-input
   id="strokeWidth"
   type="number"
   value="2"
-  change="handleStrokeWidthChange"
+  change="setModelProperty"
   min="0"
   textAlign="left"
 >
@@ -63,16 +76,28 @@
   id="shadowColor"
   name="shadow"
   value="#00FF00"
-  change="handleStrokeColorChange"
+  change="setModelProperty"
 >
 </color-input>
+
+<label class="setting-label" for="shadowAlpha">Shadow Alpha</label>
+<text-input
+  id="shadowAlpha"
+  type="number"
+  value="1"
+  change="setModelProperty"
+  min="0"
+  max="1"
+  textAlign="left"
+>
+</text-input>
 
 <label class="setting-label" for="shadowSpread">Shadow Spread</label>
 <text-input
   id="shadowSpread"
   type="number"
   value="2"
-  change="handleShadowSpreadChange"
+  change="setModelProperty"
   min="0"
   textAlign="left"
 >
@@ -83,7 +108,7 @@
   id="jitter"
   type="number"
   value="0"
-  change="handleJitterChange"
+  change="setModelProperty"
   min="0"
   textAlign="left"
 >
@@ -94,7 +119,7 @@
   id="skipPoints"
   type="number"
   value="0"
-  change="handleSkipPointChange"
+  change="setModelProperty"
   min="0"
   textAlign="left"
 >
@@ -103,7 +128,7 @@
 <label class="setting-label" for="renderPoint">Render Point</label>
 <toggle-button
   id="renderPoint"
-  click="handleRenderPointToggle"
+  click="setModelProperty"
   onlabel="On"
   offlabel="Off">
 </toggle-button>
@@ -111,7 +136,7 @@
 <label class="setting-label" for="renderLine">Render Line</label>
 <toggle-button
   id="renderLine"
-  click="handleRenderLineToggle"
+  click="setModelProperty"
   onlabel="On"
   offlabel="Off">
 </toggle-button>
@@ -121,7 +146,7 @@
   id="radius"
   type="number"
   value="0"
-  change="handleRadiusChange"
+  change="setModelProperty"
   min="0"
   textAlign="left"
 >
