@@ -1,7 +1,8 @@
 import App from '../app';
 import Primitives from '../primitives';
 import ActivityEditor from '../activity-editor/activity-editor.js';
-import ActivityRenderer from '../activity-renderer/activity-renderer.js';
+import ActivityRenderer2d from '../activity-renderer-2d/activity-renderer-2d.js';
+import ActivityRenderer3d from '../activity-renderer-3d/activity-renderer-3d.js';
 import MapViewer from '../map-viewer/map-viewer.js';
 import RenderControls2d from '../render-controls-2d/render-controls-2d.js';
 import ProfileSelector from '../profile-selector/profile-selector.js';
@@ -15,10 +16,11 @@ const components = [
   Primitives.SliderHorizontal,
   Primitives.RouterOutlet,
   Primitives.TextInput,
-  Primitives.ToastNotifcation,
+  Primitives.ToastNotifcation,  
   App,
   ActivityEditor,
-  ActivityRenderer,
+  ActivityRenderer2d,
+  ActivityRenderer3d,
   MapViewer,
   RenderControls2d,
   ProfileSelector,

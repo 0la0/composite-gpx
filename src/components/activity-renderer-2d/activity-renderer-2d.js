@@ -1,7 +1,7 @@
 import BaseComponent from '../primitives/util/base-component.js';
 import { getPosNeg, TWO_PI, } from '../../services/Math.js';
-import markup from './activity-renderer.html';
-import styles from './activity-renderer.css';
+import markup from './activity-renderer-2d.html';
+import styles from './activity-renderer-2d.css';
 
 const ZOOM = {
   MIN: 0.05,
@@ -20,9 +20,9 @@ const alphaFloatToHex = (num = 0) => {
   return hexValue;
 };
 
-export default class ActivityRenderer extends BaseComponent {
+export default class ActivityRenderer2d extends BaseComponent {
   static get tag() {
-    return 'activity-renderer';
+    return 'activity-renderer-2d';
   }
 
   constructor() {

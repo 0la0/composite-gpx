@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "leaflet": "^1.7.1",
-    "leaflet-draw": "^1.0.4"
+    "leaflet-draw": "^1.0.4",
+    "three": "^0.125.2"
   }
 }

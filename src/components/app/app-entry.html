@@ -4,7 +4,11 @@
   </p>
   <br />
   <p class="text-block">
-    <a href="/#/renderer">Renderer</a>
+    <a href="/#/renderer-2d">Renderer 2D</a>
+  </p>
+  <br />
+  <p class="text-block">
+    <a href="/#/renderer-3d">Renderer 3D</a>
   </p>
 </router-outlet>
 
@@ -12,6 +16,10 @@
   <activity-editor></activity-editor>
 </router-outlet>
 
-<router-outlet route="/renderer">
-  <activity-renderer><activity-renderer>
+<router-outlet route="/renderer-2d">
+  <activity-renderer-2d><activity-renderer-2d>
+</router-outlet>
+
+<router-outlet route="/renderer-3d">
+  <activity-renderer-3d><activity-renderer-3d>
 </router-outlet>

@@ -28,7 +28,7 @@
                     linear-gradient(45deg, var(--color-grey) 25%, transparent 25%, transparent 75%, var(--color-grey) 75%, var(--color-grey));
 }
 
-.upper-left-controls {
+.upper-right-controls {
   position: fixed;
   top: 0;
   right: 0;
