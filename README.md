@@ -28,3 +28,26 @@ npm run processData [user-name]
 * Navigate to [localhost:3001](http://localhost:3001)
 
 ---
+
+![Editor Image](/readme_assets/editor.png?raw=true "Editor")
+
+---
+
+## Prepare Activity Area
+* From the homepage, click on the `Editor` [link](http://localhost:3001/#/editor)
+* In the "Profiles" section (upper right), a button should appear that matches the last argument from the earlier command: `npm run processData [user-name]`
+* Click the profile option and the activies will appear in low resolution.
+* Click the rectangle icon on the left to select an area to render.
+* Cancel or confirm.
+
+---
+
+![Renderer Image](/readme_assets/renderer.png?raw=true "Renderer")
+
+---
+
+## Render Activities
+* From the homepage, click on the `Renderer` [link](http://localhost:3001/#/renderer)
+* In the "Profiles" section (upper right), a button should appear that matches the profile you selected in the previous step. Click a profile button.
+* Click the "Render" button.
+* To export, zoom in to 100%, right click on the image, and "Save Image As..."
