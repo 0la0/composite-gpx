@@ -3,29 +3,58 @@ import {
   WebGLRenderer, InstancedMesh, Vector3,
   Object3D, MeshLambertMaterial, PointLight,
   AmbientLight, FrontSide, InstancedBufferAttribute,
-  // SphereBufferGeometry,
+  Color, Vector2,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import BaseComponent from '../primitives/util/base-component.js';
+import { clamp, } from '../../services/Math.js';
 import markup from './activity-renderer-3d.html';
 import styles from './activity-renderer-3d.css';
+
+const scaleOff = new Vector3(0, 0, 0);
+const scaleOn = new Vector3(1, 1, 1);
+const geoSize = 0.005;
+const animationSpeed = 2.5;
 
 class GeoProperties {
   constructor() {
     this.position = new Vector3();
+    this.scale = scaleOff.clone();
   }
 }
 
 const ELEVATION = {
   MIN: 228, // 750 ft in meters
-  MAX: 365, // 1200 ft in meters
-  MAPPED_RANGE: 0.2,
-  HALF_RANGE: 0.1
+  MAX: 335, // 1100 ft in meters
+  MAPPED_RANGE: 0.15,
+  HALF_RANGE: 0.075
 };
 const elevationRange = ELEVATION.MAX - ELEVATION.MIN;
 const normalizeElevation = (elevation = 0) => {
-  const normalized = (elevation - ELEVATION.MIN) / elevationRange;
+  const clampedElevation = clamp(elevation, ELEVATION.MIN, ELEVATION.MAX);
+  const normalized = (clampedElevation - ELEVATION.MIN) / elevationRange;
   return normalized * ELEVATION.MAPPED_RANGE - ELEVATION.HALF_RANGE;
+};
+
+const mapRange = 5;
+const xBuffer = 0.7;
+const getCoordsFromPoint = ({ lat = 0, lon = 0, elevation = 0,}) => new Vector3(
+  (lon - 0.5) * mapRange - xBuffer,
+  normalizeElevation(elevation),
+  (lat - 0.5) * mapRange
+);
+
+const getColorForElevation = (elevation) => {
+  const normalized = (elevation - ELEVATION.MIN) / elevationRange;
+  const adjusted = normalized * 0.75 + 0.25;
+  return new Color(
+    adjusted,
+    0.5,
+    1 - adjusted,
+  );
 };
 
 export default class ActivityRenderer3d extends BaseComponent {
@@ -35,13 +64,9 @@ export default class ActivityRenderer3d extends BaseComponent {
 
   constructor() {
     super(styles, markup, [ 'graphicscontainer', 'profileselector', ]);
-    this.animate = this._animate.bind(this);
     this._objectProxy = new Object3D();
-    this.profileData = {
-      bounds: {},
-      activities: [],
-    };
-    this.tempCount = 0;
+    this.animatedIndex = 0;
+    this.lastRenderTime = 0;
   }
 
   connectedCallback() {
@@ -49,18 +74,14 @@ export default class ActivityRenderer3d extends BaseComponent {
   }
 
   handleRenderButtonClick() {
-    this.profileData = this.dom.profileselector.getProfileData();
-    const allPoints = this.profileData.activities
+    const profileData = this.dom.profileselector.getProfileData();
+    this.allPoints = profileData.activities
       .flatMap(activity => activity.points)
-      .filter((point, index) => index % 2 === 0);
+      .filter((point, index) => index % 5 === 0);
 
-    const numInstances = allPoints.length;
-    const geoSize = 0.0025;
+    const numInstances = this.allPoints.length;
     const pointGeometry = new BoxBufferGeometry(geoSize, geoSize, geoSize);
-    // const pointGeometry = new SphereBufferGeometry(geoSize, 4, 4);
     const pointMaterial = new MeshLambertMaterial({ side: FrontSide, });
-
-    const color = { r: 1, g: 1, b: 1, };
 
     this.cluster = new InstancedMesh(pointGeometry, pointMaterial, numInstances);
     this.geoProperties = new Array(numInstances).fill(null).map(() => new GeoProperties());
@@ -68,15 +89,15 @@ export default class ActivityRenderer3d extends BaseComponent {
     this.cluster.material.vertexColors = true;
 
     this.geoProperties.forEach((geoProperty, index) => {
-      const z = (allPoints[index].lat - 0.5) * 5;
-      const y = normalizeElevation(allPoints[index].elevation);
-      const x = (allPoints[index].lon - 0.5) * 5;
-      geoProperty.position = new Vector3(x, y, z);
+      const position = getCoordsFromPoint(this.allPoints[index]);
+      geoProperty.position = position;
       const colorIndex = index * 3;
+      const color = getColorForElevation(this.allPoints[index].elevation);
       this.colorBuffer[colorIndex] = color.r;
       this.colorBuffer[colorIndex + 1] = color.g;
       this.colorBuffer[colorIndex + 2] = color.b;
       this._objectProxy.position.copy(geoProperty.position);
+      this._objectProxy.scale.copy(geoProperty.scale);
       this._objectProxy.updateMatrix();
       this.cluster.setMatrixAt(index, this._objectProxy.matrix);  
     });
@@ -84,12 +105,34 @@ export default class ActivityRenderer3d extends BaseComponent {
     this.cluster.instanceMatrix.needsUpdate = true;
     
     this.scene.add(this.cluster);
-    this.renderer.setAnimationLoop(this.animate);
+    this.lastRenderTime = performance.now();
+    this.animate();
   }
 
-  _animate(time) {
+  animate() {
+    const currentTime = performance.now();
+    const timeDelta = currentTime - this.lastRenderTime;
+    this.lastRenderTime = currentTime;
+    const pointsPerFrame = Math.floor(timeDelta * animationSpeed);
+    if (this.animatedIndex < this.allPoints.length) {
+      const lowerBound = this.animatedIndex;
+      const upperBound = Math.min(lowerBound + pointsPerFrame, this.allPoints.length - 1);
+      for (let i = lowerBound; i <= upperBound; i++) {
+        const animatedScale = scaleOn.clone();
+        this._objectProxy.position.copy(this.geoProperties[i].position);
+        this._objectProxy.scale.copy(animatedScale);
+        this._objectProxy.updateMatrix();
+        this.cluster.setMatrixAt(i, this._objectProxy.matrix);
+      }
+      this.animatedIndex = this.animatedIndex + pointsPerFrame;
+      this.cluster.instanceMatrix.needsUpdate = true;
+    }
     this.orbitControls.update();
-    this.renderer.render(this.scene, this.camera);
+    const cameraPostion = new Vector3();
+    this.camera.getWorldPosition(cameraPostion);
+    this.pointLight1.position.copy(cameraPostion);
+    this.effectComposer.render();
+    requestAnimationFrame(() => this.animate());
   }
 
   initScene() {
@@ -98,12 +141,26 @@ export default class ActivityRenderer3d extends BaseComponent {
     this.scene = new Scene();
     this.renderer = new WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    const ambientLight = new AmbientLight(0x404040);
-    const pointLight = new PointLight(0xFFFFFF, 20, 100);
-    pointLight.position.set(25, 25, 25);
+    const ambientLight = new AmbientLight(0x909090);
+    this.pointLight1 = new PointLight(0xFFFFFF, 1, 50);
+    const pointLight2 = new PointLight(0xFFFFFF, 0.4, 50);
+    pointLight2.position.set(-5, -5, 5);
     this.scene.add(ambientLight);
-    this.scene.add(pointLight);
+    this.scene.add(this.pointLight1);
+    this.scene.add(pointLight2);
     this.dom.graphicscontainer.appendChild(this.renderer.domElement);
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+
+    // GLOW EFFECT
+    const exposure = 1.7;
+    const renderPass = new RenderPass(this.scene, this.camera);
+    const bloomPass = new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+    bloomPass.threshold = 0.1;
+    bloomPass.strength = 1.5;
+    bloomPass.radius = 1;
+    renderPass.toneMappingExposure = Math.pow(exposure, 4.0);
+    this.effectComposer = new EffectComposer(this.renderer);
+    this.effectComposer.addPass(renderPass);
+    this.effectComposer.addPass(bloomPass);
   }
 }
