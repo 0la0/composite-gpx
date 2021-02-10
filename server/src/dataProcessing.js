@@ -76,7 +76,7 @@ function gpxFileToJson(filePath) {
   };
 
   const activity = {
-    time: points[0].time,
+    time: points?.[0]?.time ?? '',
     bounds,
     points,
   };
