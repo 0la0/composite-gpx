@@ -1,22 +1,26 @@
 
-<div class="container">
-  <canvas id="canvas" class="canvas checker-background"></canvas>
+<div class="canvas-container">
+  <canvas id="canvas" class="canvas"></canvas>
 </div>
 
-<div class="upper-right-controls">
-  <profile-selector id="profileselector"></profile-selector>
-  <render-controls-2d id="rendercontrols"></render-controls-2d>
-  <text-button
-    click="handleRenderButtonClick"
-    label="Render"
-    class="render-button"
-  >
-  </text-button>
-</div>
-
-
-<div class="zoom-buttons">
-  <p id="zoomdisplay" class="zoom-display"></p>
-  <button id="zoomout" class="zoom-button">-</button>
-  <button id="zoomin" class="zoom-button">+</button>
+<div class="controls-container">
+  <div class="controls-top">
+    <profile-selector id="profileselector"></profile-selector>
+    <render-controls-2d id="rendercontrols"></render-controls-2d>
+  </div>
+  <div class="controls-bottom">
+    <text-button
+      click="handleRenderButtonClick"
+      label="Render"
+      class="render-button"
+    >
+    </text-button>
+    <div class="zoom-buttons">
+      <p id="zoomdisplay" class="zoom-display"></p>
+      <div class="button-row">
+        <button id="zoomout" class="zoom-button">-</button>
+        <button id="zoomin" class="zoom-button">+</button>
+      </div>
+    </div>
+  </div>
 </div>

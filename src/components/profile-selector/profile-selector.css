@@ -1,10 +1,11 @@
 
-.profile-viewer {
-  background-color: #CCCCCC88;
+:host {
+  background-color: var(--color-grey-darker);
   border-left: 1px solid var(--color-grey-dark);
-  border-bottom: 1px solid var(--color-grey-dark);
+  border-bottom: 1px solid var(--color-grey-light);
   border-radius: 0 0 0 4px;
   padding: 12px;
+  display: block;
 }
 
 .title {
@@ -12,19 +13,14 @@
   font-size: 16px;
 }
 
-.profile-button {
-  background: unset;
-  background-color: var(--color-grey-light);
-  border: 1px solid black;
-  border-radius: 4px;
+.selector {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
   outline: unset;
-  margin: 8px;
-  padding: 4px;
-  cursor: pointer;
-  display: block;
-}
-
-.profile-active {
-  border: 2px solid var(--color-accent);
-  background-color: var(--color-white);
+  border: 1px solid var(--color-grey-light);
+  border-radius: 4px;
+  background-color: var(--color-grey-darker);
+  color: var(--color-grey-light);
+  font-weight: bold;
 }

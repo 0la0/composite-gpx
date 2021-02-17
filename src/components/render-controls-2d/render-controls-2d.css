@@ -3,7 +3,7 @@
   background-color: var(--color-grey-darker);
   color: var(--color-grey-light);
   font-size: 16px;
-  padding: 4px;
+  padding: 12px 24px;
   display: grid;
   grid-template-columns: 150px 80px;
   grid-gap: 12px 4px;

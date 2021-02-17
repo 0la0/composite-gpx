@@ -15,7 +15,7 @@ export default class ProfileSelector extends BaseComponent {
   }
 
   constructor() {
-    super(styles, markup, [ 'profiles', ]);
+    super(styles, markup, [ 'selector', ]);
     this.profileService = new ProfileService();
     this.persistedStore = new PersistedStore();
     this.selectedProfileName = '';
@@ -43,26 +43,18 @@ export default class ProfileSelector extends BaseComponent {
 
   renderProfileMenu(profileNames) {
     this.activeNewName = '';
-    [...this.dom.profiles.children].forEach(child => this.dom.profiles.removeChild(child));
+    [...this.dom.selector].forEach(child => this.dom.selector.removeChild(child));
     profileNames.forEach(profileName => {
-      const viewButton = document.createElement('button');
-      viewButton.setAttribute('id', profileName);
-      viewButton.classList.add('profile-button');
-      viewButton.innerText = profileName;
-      viewButton.addEventListener('click', () => this.setActiveProfile(profileName));
-      this.dom.profiles.appendChild(viewButton);
+      const option = document.createElement('option');
+      option.setAttribute('value', profileName);
+      option.classList.add('profile-button');
+      option.innerText = profileName;
+      this.dom.selector.appendChild(option);
     });
   }
 
   setActiveProfile(profileName) {
     this.selectedProfileName = profileName;
-    [...this.dom.profiles.children].forEach(child => {
-      if (child.getAttribute('id') === profileName) {
-        child.classList.add(Constants.PROFILE_ACTIVE);
-      } else {
-        child.classList.remove(Constants.PROFILE_ACTIVE);
-      }
-    });
     this.persistedStore.storeObject(Constants.STORE_KEY, { profileName, });
     this.fetchProfileData(profileName);
   }
