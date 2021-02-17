@@ -27,8 +27,10 @@ class GeoProperties {
 }
 
 const ELEVATION = {
-  MIN: 228, // 750 ft in meters
-  MAX: 335, // 1100 ft in meters
+  // MIN: 228, // 750 ft in meters
+  MIN: 300, // 750 ft in meters
+  // MAX: 335, // 1100 ft in meters
+  MAX: 380,
   MAPPED_RANGE: 0.15,
   HALF_RANGE: 0.075
 };

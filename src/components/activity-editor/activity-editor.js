@@ -22,8 +22,8 @@ export default class ActivityEditor extends BaseComponent {
       .catch(error => console.log(error));
   }
 
-  createRenderView(bounds) {
-    this.profileService.createRenderView(this.activeProfileName, bounds);
+  createRenderView(name, bounds) {
+    this.profileService.createRenderView(this.activeProfileName, bounds, name);
   }
 
   loadProfile(profileName) {

@@ -100,17 +100,18 @@ export default class MapViewer extends BaseComponent {
       if (type !== 'rectangle') {
         layer.bindPopup('Only rectangles supported');
       } else {
-        const createRenderView= window.confirm('Create render view?');
-        if (createRenderView) {
-          const latLngs = layer.getLatLngs()[0];
-          const bounds = {
-            minlat: latLngs[0].lat,
-            minlon: latLngs[0].lng,
-            maxlat: latLngs[1].lat,
-            maxlon: latLngs[2].lng,
-          };
-          this.renderViewCallback(bounds);
+        const renderViewName = window.prompt('Create render file?', '');
+        if (!renderViewName) {
+          return;
         }
+        const latLngs = layer.getLatLngs()[0];
+        const bounds = {
+          minlat: latLngs[0].lat,
+          minlon: latLngs[0].lng,
+          maxlat: latLngs[1].lat,
+          maxlon: latLngs[2].lng,
+        };
+        this.renderViewCallback(renderViewName, bounds);
       }
     });
   }

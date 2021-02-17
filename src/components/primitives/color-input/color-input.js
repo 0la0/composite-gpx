@@ -13,23 +13,11 @@ export default class ColorInput extends BaseComponent {
   }
 
   constructor() {
-    super(style, markup, [ 'colorinput', 'deselect', ]);
+    super(style, markup, [ 'colorinput', ]);
     this.value = null;
     this.dom.colorinput.addEventListener('change', (event) => {
       this.value = event.target.value;
       this.onChange(event);
-    });
-    this.dom.deselect.addEventListener('click', () => {
-      if (this.value) {
-        this.value = null;
-        this.dom.deselect.classList.add('deselect-active');
-        this.dom.colorinput.setAttribute('disabled', true);
-      } else {
-        this._setValue('#000000');
-        this.dom.deselect.classList.remove('deselect-active');
-        this.dom.colorinput.removeAttribute('disabled');
-      }
-      this.onChange({ target: { value: this.value, }});
     });
   }
 

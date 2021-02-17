@@ -5,33 +5,6 @@
   align-items: flex-end;
 }
 
-.deselect-button {
-  width: 20px;
-  height: 20px;
-  margin-right: 12px;
-  cursor: pointer;
-  background-color: var(--color-grey);
-  border: unset;
-  outline: unset;
-  position: relative;
-  border-radius: 4px;
-}
-.deselect-active {
-  background-color: var(--color-white);
-}
-
-.deselect-dash {
-  position: absolute;
-  width: 26px;
-  height: 2px;
-  background-color: var(--color-error);
-  border-radius: 4px;
-  top: 50%;
-  left: 50%;
-  transform-origin: center;
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
-
 .color-input {
   margin: unset;
   padding: unset;

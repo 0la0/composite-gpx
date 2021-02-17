@@ -52,7 +52,7 @@ class ProfileService {
 
   createRenderView(name, body) {
     const { bounds, } = body;
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const modifiedFileName = name.replace('.min', '');
       const file = fs.readFileSync(`${DIR.JSON}/${modifiedFileName}${FILE_TYPE.JSON}`).toString('utf8');
       const fileContents = JSON.parse(file);
@@ -67,13 +67,12 @@ class ProfileService {
           ...activity,
           points: transformedPoints,
         };
-      })
-      .filter(activity => activity.points.length);
+      }).filter(activity => activity.points.length);
       const appFile = {
         activities: modifiedActivities,
         bounds,
       };
-      fs.writeFileSync(`${DIR.JSON}/${modifiedFileName}.app.json`, JSON.stringify(appFile));
+      fs.writeFileSync(`${DIR.JSON}/${body.name}.app.json`, JSON.stringify(appFile));
       return resolve();
     });
   }

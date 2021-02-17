@@ -40,7 +40,7 @@ export default class ActivityRenderer2d extends BaseComponent {
       this.setZoom();
     });
     this.zoom = ZOOM.DEFAULT;
-    this.aspectRatio = 1;
+    this.aspectRatio = 1; 
     this.dims = {
       width: 5000,
       height: 5000,
@@ -77,11 +77,9 @@ export default class ActivityRenderer2d extends BaseComponent {
       console.error('Define render options');
       return;
     }
-    console.log('renderOptions', this.renderOptions);
     const { bounds, activities, } = this.profileData;
     this.aspectRatio = (bounds.maxlon - bounds.minlon) / (bounds.maxlat - bounds.minlat);
-
-    const adjustedWidth = this.renderOptions.canvasSize.value * this.aspectRatio;
+    const adjustedWidth = this.renderOptions.canvasSize.value;
     const adjustedHeight = this.renderOptions.canvasSize.value * (1 / this.aspectRatio);
     this.dom.canvas.width = adjustedWidth;
     this.dom.canvas.height = adjustedHeight;
