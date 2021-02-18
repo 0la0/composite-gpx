@@ -19,54 +19,44 @@ export default class ProfileSelector extends BaseComponent {
     this.profileService = new ProfileService();
     this.persistedStore = new PersistedStore();
     this.selectedProfileName = '';
-    this.profileData = {
-      bounds: {},
-      activities: [],
-    };
+    this.dom.selector.addEventListener('change', (event) => this.setActiveProfile(event.target.value));
   }
 
   connectedCallback() {
     this.profileService.getRenderViews()
-      .then(response => this.renderProfileMenu(response.views))
-      .then(() => {
+      .then((response) => {
         const persistedData = this.persistedStore.getObjectFromStorage(Constants.STORE_KEY);
         if (persistedData?.profileName) {
           this.setActiveProfile(persistedData.profileName);
         }
+        this.renderProfileMenu(response.views, persistedData?.profileName);
       })
       .catch(error => console.log(error));
   }
 
   getProfileData() {
-    return this.profileData;
+    return this.profileService.getRenderView(this.selectedProfileName);
   }
 
-  renderProfileMenu(profileNames) {
-    this.activeNewName = '';
+  renderProfileMenu(profileNames, activeView) {
+    const selectedItem = activeView || profileNames[0];
     [...this.dom.selector].forEach(child => this.dom.selector.removeChild(child));
-    profileNames.forEach(profileName => {
-      const option = document.createElement('option');
-      option.setAttribute('value', profileName);
-      option.classList.add('profile-button');
-      option.innerText = profileName;
-      this.dom.selector.appendChild(option);
-    });
+    profileNames
+      .forEach(profileName => {
+        const displayName = profileName.substring(0, profileName.lastIndexOf('.app'));
+        const option = document.createElement('option');
+        option.setAttribute('value', profileName);
+        if (profileName === selectedItem) {
+          option.setAttribute('selected', true);
+        }
+        option.classList.add('profile-button');
+        option.innerText = displayName;
+        this.dom.selector.appendChild(option);
+      });
   }
 
   setActiveProfile(profileName) {
     this.selectedProfileName = profileName;
     this.persistedStore.storeObject(Constants.STORE_KEY, { profileName, });
-    this.fetchProfileData(profileName);
-  }
-
-  fetchProfileData(profileName) {
-    this.profileService.getRenderView(profileName)
-      .then(response => {
-        if (!response) {
-          throw new Error('No activities', response);
-        }
-        this.profileData = response;
-      })
-      .catch(error => console.log(error));
   }
 }

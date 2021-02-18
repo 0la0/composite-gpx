@@ -26,6 +26,12 @@ class GeoProperties {
   }
 }
 
+// TODO:
+//  - create render options UI
+//  - play / pause / restart
+//  - move render logic to own class
+//  - aspect ratio
+
 const ELEVATION = {
   // MIN: 228, // 750 ft in meters
   MIN: 300, // 750 ft in meters

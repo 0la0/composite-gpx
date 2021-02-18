@@ -51,20 +51,8 @@ export default class MapViewer extends BaseComponent {
       accessToken: mapBoxAccessToken,
     };
     L.tileLayer(tileLayer, options).addTo(this.leafletMap);
-
-    // const circle = L.circle([51.508, -0.11], {
-    //   color: 'red',
-    //   fillColor: '#f03',
-    //   fillOpacity: 0.5,
-    //   radius: 500
-    // }).addTo(this.leafletMap);
-
-    // var polygon = L.polygon([
-    //   [51.509, -0.08],
-    //   [51.503, -0.06],
-    //   [51.51, -0.047]
-    // ]).addTo(this.leafletMap);
-
+    this.activityLayer = new L.FeatureGroup();
+    this.leafletMap.addLayer(this.activityLayer);
 
     // Initialise the FeatureGroup to store editable layers
     const editableLayers = new L.FeatureGroup();
@@ -116,11 +104,13 @@ export default class MapViewer extends BaseComponent {
     });
   }
 
+  clear() {
+    this.activityLayer.clearLayers();
+  }
+
   plotActivities(activities) {
     const pointOptions = {
       color: 'red',
-      // fillColor: '#f03',
-      // fillOpacity: 0.5,
       radius: 2
     };
     activities.forEach(activities => {
@@ -129,7 +119,7 @@ export default class MapViewer extends BaseComponent {
         // .filter((point, index) => index % 5 === 0)
         .forEach(point => {
           const latLon = [point.lat, point.lon];
-          const circle = L.circle(latLon, pointOptions).addTo(this.leafletMap);
+          const circle = L.circle(latLon, pointOptions).addTo(this.activityLayer);
         });
     });
   }

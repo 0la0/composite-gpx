@@ -15,7 +15,6 @@ export default class ActivityEditor extends BaseComponent {
   }
 
   connectedCallback() {
-    console.log(this.dom.map);
     this.dom.map.setRenderViewCallback(this.createRenderView.bind(this));
     this.profileService.getProfiles()
       .then(response => this.renderProfileSelector(response.profiles))
@@ -27,6 +26,7 @@ export default class ActivityEditor extends BaseComponent {
   }
 
   loadProfile(profileName) {
+    this.dom.map.clear();
     this.profileService.getProfile(profileName)
       .then(response => {
         const { activities, } = response;
@@ -35,6 +35,12 @@ export default class ActivityEditor extends BaseComponent {
         }
         this.activeProfileName = profileName;
         this.dom.map.plotActivities(activities);
+        
+        const mappedYears = activities
+          .filter(activity => activity.time)
+          .map(activity => new Date(activity.time).getFullYear());
+        const uniqueYears = new Set(mappedYears);
+        console.log('TODO: build filter for years:', uniqueYears);
       })
       .catch(error => console.log(error));
   }
