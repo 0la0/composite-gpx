@@ -8,10 +8,7 @@ import leafletDrawStyles from 'leaflet-draw/dist/leaflet.draw.css';
 
 const styles = `${leafletSyles}\n${leafletDrawStyles}\n${customStyles}`;
 
-const INIT_COORDS = {
-  KC: [ 39.0353, -94.5691 ],
-  LONDON: [ 51.508, -0.11 ],
-};
+const INITIAL_COORD_FALLBACK = { lat: 51.508, lon:  -0.11, };
 
 export default class MapViewer extends BaseComponent {
   static get tag() {
@@ -32,15 +29,17 @@ export default class MapViewer extends BaseComponent {
   }
 
   initMap() {
-    const { mapBoxAccessToken, } = ENV; // eslint-disable-line no-undef
-    this.leafletMap = L.map(
-      this.dom.mapContainer,
-      {
-        zoom: 12,
-        preferCanvas: true,
-        center: INIT_COORDS.KC,
-      }
-    );
+    const { mapBoxAccessToken, initialCoords, } = ENV; // eslint-disable-line no-undef
+    const center = [
+      initialCoords?.lat ?? INITIAL_COORD_FALLBACK.lat,
+      initialCoords?.lon ?? INITIAL_COORD_FALLBACK.lon,
+    ];
+    const mapOptions = {
+      zoom: 12,
+      preferCanvas: true,
+      center,
+    };
+    this.leafletMap = L.map(this.dom.mapContainer, mapOptions);
     const tileLayer = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${mapBoxAccessToken}`;
     const options = {
       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',

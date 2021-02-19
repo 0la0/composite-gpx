@@ -16,10 +16,19 @@ npm run processData [user-name]
 --- 
 
 ## Setup
-* `npm install`
+* `npm install; cd server; npm install`
 * [Create a MapBox access token](https://account.mapbox.com/access-tokens/)
 * Createa a file in the root directory called `.env.json`
-* Add the access token in the json: `{ "mapBoxAccessToken": MAP_BOX_ACCESS_TOKEN }`
+* Add the access token and optional initial map coordinates:
+```json
+ {
+   "mapBoxAccessToken": "MAP_BOX_ACCESS_TOKEN",
+   "initialCoords": {
+    "lat": 0,
+    "lon": 0
+  }
+ }
+```
 
 ---  
 

@@ -48,7 +48,7 @@ export default class ActivityRenderer2d extends BaseComponent {
   render(profileData, renderOptions) {
     const { bounds, activities, } = profileData;
     const aspectRatio = (bounds.maxlon - bounds.minlon) / (bounds.maxlat - bounds.minlat);
-    const width = renderOptions.canvasSize.value * (aspectRatio < 1 ? aspectRatio : 1);
+    const width = renderOptions.canvasSize.value * 0.75; // cheap approximation of an "accurate" map projection :grimace:
     const height = renderOptions.canvasSize.value / aspectRatio;
     this.dom.canvas.width = width;
     this.dom.canvas.height = height;
