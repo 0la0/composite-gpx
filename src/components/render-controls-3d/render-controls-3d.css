@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  background-color: var(--color-grey-darker);
+  color: var(--color-grey-light);
+  font-size: 16px;
+  padding: 12px 24px;
+  display: grid;
+  grid-template-columns: 150px 80px;
+  grid-gap: 12px 4px;
+  align-items: end;
+}
+
+.setting-label {
+  margin-right: 8px;
+}

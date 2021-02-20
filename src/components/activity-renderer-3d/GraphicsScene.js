@@ -1,4 +1,5 @@
-import { 
+import {
+  Color,
   PerspectiveCamera,
   Scene,
   WebGLRenderer,
@@ -31,7 +32,7 @@ export default class GraphicsScene {
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
     this.orbitControls.minPolarAngle = 0;
     this.orbitControls.maxPolarAngle = Math.PI * 0.5;
-    this.orbitControls.zoomSpeed = 0.5;
+    this.orbitControls.zoomSpeed = 0.75;
 
     // GLOW EFFECT
     const exposure = 1.7;
@@ -44,6 +45,18 @@ export default class GraphicsScene {
     this.effectComposer = new EffectComposer(this.renderer);
     this.effectComposer.addPass(renderPass);
     this.effectComposer.addPass(bloomPass);
+  }
+
+  setRenderOptions(renderOptions) {
+    // this.orbitControls.reset();
+    // this.camera.position.y = 0.5;
+    // this.camera.position.x = renderOptions.cameraCenterX.value;
+    // this.camera.position.z = renderOptions.cameraCenterX.value;
+    
+    // console.log('backgroudn color', renderOptions.backgroundColor);
+    const backgroundColor = new Color(renderOptions.backgroundColor.value);
+    this.renderer.setClearColor(backgroundColor, 1);
+    // this.orbitControls.update();
   }
 
   add(obj) {

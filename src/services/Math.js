@@ -44,3 +44,5 @@ export function mapToRange(inputMin, inputMax, outputMin, outputMax, x) {
 export function msToSec(ms) {
   return ms / 1000;
 }
+
+export const footToMeter = ft => ft * 0.3048;

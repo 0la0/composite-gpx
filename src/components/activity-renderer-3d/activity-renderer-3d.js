@@ -4,9 +4,6 @@ import PointRenderer from './PointRenderer.js';
 import markup from './activity-renderer-3d.html';
 import styles from './activity-renderer-3d.css';
 
-// TODO:
-//  - create render options UI
-
 const UI_STATE = {
   IDLE: 'IDLE',
   LOADING: 'LOADING',
@@ -19,7 +16,7 @@ export default class ActivityRenderer3d extends BaseComponent {
   }
 
   constructor() {
-    super(styles, markup, [ 'animatebutton', 'graphicscontainer', 'profileselector', ]);
+    super(styles, markup, [ 'animatebutton', 'graphicscontainer', 'rendercontrols', 'profileselector', ]);
     this.lastRenderTime = 0;
     this.state = UI_STATE.IDLE;
   }
@@ -34,12 +31,17 @@ export default class ActivityRenderer3d extends BaseComponent {
     }
     if (this.state === UI_STATE.ANIMATING) {
       this.state = UI_STATE.IDLE;
+      this.dom.animatebutton.setAttribute('label', 'Start');
       return;
     }
     this.state = UI_STATE.LOADING;
     this.dom.animatebutton.setAttribute('label', 'Loading');
+    const renderOptions = this.dom.rendercontrols.getRenderOptions();
+    this.graphicsScene.remove(this.pointRenderer?.getMesh());
+    this.pointRenderer?.dispose();
+    this.graphicsScene.setRenderOptions(renderOptions);
     this.dom.profileselector.getProfileData()
-      .then(profileData => this.startAnimation(profileData))
+      .then(profileData => this.initializeGeometry(profileData, renderOptions))
       .catch(error => {
         this.state = UI_STATE.IDLE;
         this.dom.animatebutton.setAttribute('label', 'Start');
@@ -47,10 +49,8 @@ export default class ActivityRenderer3d extends BaseComponent {
       });
   }
 
-  startAnimation(profileData) {
-    this.graphicsScene.remove(this.pointRenderer?.getMesh());
-    this.pointRenderer?.dispose();
-    this.pointRenderer = new PointRenderer(profileData);
+  initializeGeometry(profileData, renderOptions) {
+    this.pointRenderer = new PointRenderer(profileData, renderOptions);
     this.graphicsScene.add(this.pointRenderer.getMesh());
     this.lastRenderTime = performance.now();
     this.state = UI_STATE.ANIMATING;

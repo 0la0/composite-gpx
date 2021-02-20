@@ -5,6 +5,7 @@ import ActivityRenderer2d from '../activity-renderer-2d/activity-renderer-2d.js'
 import ActivityRenderer3d from '../activity-renderer-3d/activity-renderer-3d.js';
 import MapViewer from '../map-viewer/map-viewer.js';
 import RenderControls2d from '../render-controls-2d/render-controls-2d.js';
+import RenderControls3d from '../render-controls-3d/render-controls-3d.js';
 import ProfileSelector from '../profile-selector/profile-selector.js';
 
 const components = [
@@ -23,6 +24,7 @@ const components = [
   ActivityRenderer3d,
   MapViewer,
   RenderControls2d,
+  RenderControls3d,
   ProfileSelector,
 ];
 
