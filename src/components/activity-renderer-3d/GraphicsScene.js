@@ -15,7 +15,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 export default class GraphicsScene {
   constructor(domElement) {
     this.camera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10);
-    this.camera.position.z = 1;
+    this.camera.position.y = 0.5;
     this.scene = new Scene();
     this.renderer = new WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -29,6 +29,9 @@ export default class GraphicsScene {
     this.scene.add(pointLight2);
     domElement.appendChild(this.renderer.domElement);
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.orbitControls.minPolarAngle = 0;
+    this.orbitControls.maxPolarAngle = Math.PI * 0.5;
+    this.orbitControls.zoomSpeed = 0.5;
 
     // GLOW EFFECT
     const exposure = 1.7;

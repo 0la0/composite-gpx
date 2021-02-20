@@ -4,10 +4,8 @@ import {
   FrontSide,
   InstancedBufferAttribute,
   InstancedMesh,
-  MeshBasicMaterial,
   MeshLambertMaterial,
   Object3D,
-  TetrahedronBufferGeometry,
   Vector3,
 } from 'three';
 import { clamp, } from '../../services/Math.js';
@@ -16,19 +14,15 @@ const scaleOff = new Vector3(0, 0, 0);
 const scaleOn = new Vector3(1, 1, 1);
 const geoSize = 0.005;
 const animationSpeed = 2.5;
+const MAP_BOUNDS = 3;
 
-class GeoProperties {
-  constructor() {
-    this.position = new Vector3();
+class Particle {
+  constructor(position, color) {
+    this.position = position || new Vector3();
+    this.color = color || new Color();
     this.scale = scaleOff.clone();
   }
 }
-
-// TODO:
-//  - create render options UI
-//  - play / pause / restart
-//  - move render logic to own class
-//  - aspect ratio
 
 const ELEVATION = {
   // MIN: 228, // 750 ft in meters
@@ -45,12 +39,10 @@ const normalizeElevation = (elevation = 0) => {
   return normalized * ELEVATION.MAPPED_RANGE - ELEVATION.HALF_RANGE;
 };
 
-const mapRange = 5;
-const xBuffer = 0.7;
-const getCoordsFromPoint = ({ lat = 0, lon = 0, elevation = 0,}) => new Vector3(
-  (lon - 0.5) * mapRange - xBuffer,
+const getCoordsFromPoint = ({ lat = 0, lon = 0, elevation = 0,}, aspectRatio) => new Vector3(
+  (lon - 0.5) * MAP_BOUNDS * 0.75,
   normalizeElevation(elevation),
-  (lat - 0.5) * mapRange
+  (lat - 0.5) * MAP_BOUNDS / aspectRatio
 );
 
 const getColorForElevation = (elevation) => {
@@ -64,35 +56,39 @@ const getColorForElevation = (elevation) => {
 };
 
 export default class PointRenderer {
-  constructor(particles) {
+  constructor({ activities, bounds, }) {
+    const allPoints = activities
+      .flatMap(activity => activity.points)
+      .filter((point, index) => index % 5 === 0);
+    const aspectRatio = (bounds.maxlon - bounds.minlon) / (bounds.maxlat - bounds.minlat);
+
     const pointGeometry = new BoxBufferGeometry(geoSize, geoSize, geoSize);
     const pointMaterial = new MeshLambertMaterial({ side: FrontSide, });
     
     this.animatedIndex = 0;
-    // this.particles = psarticles;
-    this.cluster = new InstancedMesh(pointGeometry, pointMaterial, particles.length);
-    this.geoProperties = new Array(particles.length).fill(null).map(() => new GeoProperties());
-    this.colorBuffer = new Float32Array(particles.length * 3);
+    this.cluster = new InstancedMesh(pointGeometry, pointMaterial, allPoints.length);
+    
+    this.particles = allPoints.map(particle => {
+      const position = getCoordsFromPoint(particle, aspectRatio);
+      const color = getColorForElevation(particle.elevation);
+      return new Particle(position, color);
+    });
+  
+    this.colorBuffer = new Float32Array(allPoints.length * 3);
     this.cluster.material.vertexColors = true;
 
-    // TODO: set size ast zero ...
     const objectProxy = new Object3D();
-    this.geoProperties.forEach((geoProperty, index) => {
-      const position = getCoordsFromPoint(particles[index]);
-      geoProperty.position = position;
+    this.particles.forEach((geoProperty, index) => {
       const colorIndex = index * 3;
-      const color = getColorForElevation(particles[index].elevation);
-      this.colorBuffer[colorIndex] = color.r;
-      this.colorBuffer[colorIndex + 1] = color.g;
-      this.colorBuffer[colorIndex + 2] = color.b;
-      objectProxy.position.copy(geoProperty.position);
+      this.colorBuffer[colorIndex] = geoProperty.color.r;
+      this.colorBuffer[colorIndex + 1] = geoProperty.color.g;
+      this.colorBuffer[colorIndex + 2] = geoProperty.color.b;
       objectProxy.scale.copy(geoProperty.scale);
       objectProxy.updateMatrix();
       this.cluster.setMatrixAt(index, objectProxy.matrix);  
     });
     this.cluster.geometry.setAttribute('color', new InstancedBufferAttribute(this.colorBuffer, 3));
     this.cluster.instanceMatrix.needsUpdate = true;
-
   }
 
   getMesh() {
@@ -100,21 +96,23 @@ export default class PointRenderer {
   }
 
   update(elapsedTime) {
+    if (this.animatedIndex >= this.particles.length) {
+      return false;
+    }
     const objectProxy = new Object3D();
     const pointsPerFrame = Math.floor(elapsedTime * animationSpeed);
-    if (this.animatedIndex < this.geoProperties.length) {
-      const lowerBound = this.animatedIndex;
-      const upperBound = Math.min(lowerBound + pointsPerFrame, this.geoProperties.length - 1);
-      for (let i = lowerBound; i <= upperBound; i++) {
-        const animatedScale = scaleOn.clone();
-        objectProxy.position.copy(this.geoProperties[i].position);
-        objectProxy.scale.copy(animatedScale);
-        objectProxy.updateMatrix();
-        this.cluster.setMatrixAt(i, objectProxy.matrix);
-      }
-      this.animatedIndex = this.animatedIndex + pointsPerFrame;
-      this.cluster.instanceMatrix.needsUpdate = true;
+    const lowerBound = this.animatedIndex;
+    const upperBound = Math.min(lowerBound + pointsPerFrame, this.particles.length - 1);
+    for (let i = lowerBound; i <= upperBound; i++) {
+      const animatedScale = scaleOn.clone();
+      objectProxy.position.copy(this.particles[i].position);
+      objectProxy.scale.copy(animatedScale);
+      objectProxy.updateMatrix();
+      this.cluster.setMatrixAt(i, objectProxy.matrix);
     }
+    this.animatedIndex = this.animatedIndex + pointsPerFrame;
+    this.cluster.instanceMatrix.needsUpdate = true;
+    return true;
   }
 
   dispose() {

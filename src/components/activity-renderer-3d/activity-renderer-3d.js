@@ -6,8 +6,6 @@ import styles from './activity-renderer-3d.css';
 
 // TODO:
 //  - create render options UI
-//  - aspect ratio
-//  - render on vertical plane
 
 const UI_STATE = {
   IDLE: 'IDLE',
@@ -23,8 +21,11 @@ export default class ActivityRenderer3d extends BaseComponent {
   constructor() {
     super(styles, markup, [ 'animatebutton', 'graphicscontainer', 'profileselector', ]);
     this.lastRenderTime = 0;
-    this.graphicsScene = new GraphicsScene(this.dom.graphicscontainer);
     this.state = UI_STATE.IDLE;
+  }
+
+  connectedCallback() {
+    this.graphicsScene = new GraphicsScene(this.dom.graphicscontainer);
   }
 
   handleAnimateButtonClick() {
@@ -36,12 +37,12 @@ export default class ActivityRenderer3d extends BaseComponent {
       return;
     }
     this.state = UI_STATE.LOADING;
-    this.dom.animatebutton.innerText = 'Loading';
+    this.dom.animatebutton.setAttribute('label', 'Loading');
     this.dom.profileselector.getProfileData()
       .then(profileData => this.startAnimation(profileData))
       .catch(error => {
         this.state = UI_STATE.IDLE;
-        this.dom.animatebutton.innerText = 'Start';
+        this.dom.animatebutton.setAttribute('label', 'Start');
         console.log(error);
       });
   }
@@ -49,14 +50,11 @@ export default class ActivityRenderer3d extends BaseComponent {
   startAnimation(profileData) {
     this.graphicsScene.remove(this.pointRenderer?.getMesh());
     this.pointRenderer?.dispose();
-    const allPoints = profileData.activities
-      .flatMap(activity => activity.points)
-      .filter((point, index) => index % 5 === 0);
-    this.pointRenderer = new PointRenderer(allPoints);
+    this.pointRenderer = new PointRenderer(profileData);
     this.graphicsScene.add(this.pointRenderer.getMesh());
     this.lastRenderTime = performance.now();
     this.state = UI_STATE.ANIMATING;
-    this.dom.animatebutton.innerText = 'Pause';
+    this.dom.animatebutton.setAttribute('label', 'Pause');
     this.animate();
   }
 
@@ -65,7 +63,11 @@ export default class ActivityRenderer3d extends BaseComponent {
     const elapsedTime = currentTime - this.lastRenderTime;
     this.lastRenderTime = currentTime;
     if (this.state === UI_STATE.ANIMATING) {
-      this.pointRenderer.update(elapsedTime);
+      const result = this.pointRenderer.update(elapsedTime);
+      if (!result) {
+        this.state === UI_STATE.IDLE;
+        this.dom.animatebutton.setAttribute('label', 'Start');
+      }
     }
     this.graphicsScene.update(elapsedTime);
     requestAnimationFrame(() => this.animate());

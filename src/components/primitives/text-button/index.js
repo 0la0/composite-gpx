@@ -10,6 +10,10 @@ export default class TextButton extends BaseComponent {
     return 'text-button';
   }
 
+  static get observedAttributes() {
+    return [ 'label', ];
+  }
+
   constructor() {
     super(
       style,
@@ -22,5 +26,11 @@ export default class TextButton extends BaseComponent {
     reflectCallback(this, 'click', this.dom.button);
     reflectAttribute(this, 'value', this.dom.button);
     this.dom.button.innerText = this.getAttribute('label');
+  }
+
+  attributeChangedCallback(attrName, oldVal, newVal) {
+    if (attrName === 'label') {
+      this.dom.button.innerText = newVal;
+    }
   }
 }
