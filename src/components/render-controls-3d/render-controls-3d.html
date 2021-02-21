@@ -46,6 +46,15 @@
 >
 </color-input>
 
+<label class="setting-label" for="toggleElevation">Elevation Displacement</label>
+<toggle-button
+  id="toggleElevation"
+  onLabel="Elevation"
+  offLabel="Elevation"
+  click="setModelProperty"
+>
+</toggle-button>
+
 <label class="setting-label" for="elevationMin">Elevation Min (ft)</label>
 <text-input
   id="elevationMin"
@@ -65,6 +74,15 @@
   textAlign="left"
 >
 </text-input>
+
+<label class="setting-label" for="elevationColorToggle">Elevation Color</label>
+<toggle-button
+  id="elevationColorToggle"
+  onLabel="Elevation"
+  offLabel="Elevation"
+  click="setModelProperty"
+>
+</toggle-button>
 
 <label class="setting-label" for="centerX">Center X</label>
 <text-input
@@ -89,6 +107,46 @@
 <label class="setting-label" for="animationSpeed">Animation Speed</label>
 <text-input
   id="animationSpeed"
+  type="number"
+  change="setModelProperty"
+  min="0"
+  textAlign="left"
+>
+</text-input>
+
+<label class="setting-label" for="glowExposure">Glow Exposure</label>
+<text-input
+  id="glowExposure"
+  type="number"
+  change="setModelProperty"
+  min="0"
+  textAlign="left"
+>
+</text-input>
+
+<label class="setting-label" for="glowThreshold">Glow Threshold</label>
+<text-input
+  id="glowThreshold"
+  type="number"
+  change="setModelProperty"
+  min="0"
+  textAlign="left"
+>
+</text-input>
+
+<label class="setting-label" for="glowStrength">Glow Strength</label>
+<text-input
+  id="glowStrength"
+  type="number"
+  change="setModelProperty"
+  min="0"
+  textAlign="left"
+>
+</text-input>
+
+<label class="setting-label" for="glowRadius">Glow Radius</label>
+<text-input
+  id="glowRadius"
   type="number"
   change="setModelProperty"
   min="0"

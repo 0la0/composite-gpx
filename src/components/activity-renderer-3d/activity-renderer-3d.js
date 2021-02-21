@@ -19,10 +19,20 @@ export default class ActivityRenderer3d extends BaseComponent {
     super(styles, markup, [ 'animatebutton', 'graphicscontainer', 'rendercontrols', 'profileselector', ]);
     this.lastRenderTime = 0;
     this.state = UI_STATE.IDLE;
+    this.stopAnimation = false;
+    this.handleResize = () => this.graphicsScene?.handleResize();
   }
 
   connectedCallback() {
+    window.addEventListener('resize', this.handleResize);
     this.graphicsScene = new GraphicsScene(this.dom.graphicscontainer);
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('resize', this.handleResize);
+    this.stopAnimation = true;
+    this.graphicsScene?.dispose();
+    this.pointRenderer?.dispose();
   }
 
   handleAnimateButtonClick() {
@@ -59,13 +69,16 @@ export default class ActivityRenderer3d extends BaseComponent {
   }
 
   animate() {
+    if (this.stopAnimation) {
+      return;
+    }
     const currentTime = performance.now();
     const elapsedTime = currentTime - this.lastRenderTime;
     this.lastRenderTime = currentTime;
     if (this.state === UI_STATE.ANIMATING) {
       const result = this.pointRenderer.update(elapsedTime);
       if (!result) {
-        this.state === UI_STATE.IDLE;
+        this.state = UI_STATE.IDLE;
         this.dom.animatebutton.setAttribute('label', 'Start');
       }
     }

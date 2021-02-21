@@ -24,6 +24,10 @@ const defaultModel = {
     type: 'string',
     value: '#FFFFFF',
   },
+  toggleElevation: {
+    type: 'boolean',
+    value: true,
+  },
   elevationMin: {
     type: 'number',
     value: 780,
@@ -31,6 +35,10 @@ const defaultModel = {
   elevationMax: {
     type: 'number',
     value: 1200,
+  },
+  elevationColorToggle: {
+    type: 'boolean',
+    value: true,
   },
   centerX: {
     type: 'number',
@@ -41,6 +49,22 @@ const defaultModel = {
     value: 0,
   },
   animationSpeed: {
+    type: 'number',
+    value: 1,
+  },
+  glowExposure: {
+    type: 'number',
+    value: 1.7,
+  },
+  glowThreshold: {
+    type: 'number',
+    value: 0.1,
+  },
+  glowStrength: {
+    type: 'number',
+    value: 1.5,
+  },
+  glowRadius: {
     type: 'number',
     value: 1,
   },
@@ -56,10 +80,13 @@ export default class RenderControls3d extends BaseComponent {
   }
 
   constructor() {
-    super(styles, markup, Object.keys(defaultModel));
+    super(styles, markup, Object.keys(defaultModel).concat([ 'elevationContainer', ]));
     this.persistedStore = new PersistedStore();
     const persistedModel = this.persistedStore.getObjectFromStorage(Constants.STORE_KEY);
-    this.model = Object.keys(persistedModel).length ? persistedModel : { ...defaultModel, };
+    this.model = {
+      ...defaultModel,
+      ...persistedModel,
+    };
   }
 
   connectedCallback() {

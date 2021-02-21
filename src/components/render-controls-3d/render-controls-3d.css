@@ -13,3 +13,20 @@
 .setting-label {
   margin-right: 8px;
 }
+
+.elevation-container {
+  display: grid;
+  grid-template-columns: 150px 80px;
+  grid-gap: 12px 4px;
+  align-items: end;
+  display: none;
+  width: 100%;
+}
+.elevation-container::after {
+  content: '';
+  display: block;
+}
+
+.elevation-container-visible {
+  display: block;
+}

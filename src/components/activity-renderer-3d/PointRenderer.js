@@ -21,11 +21,14 @@ class Particle {
 }
 
 const ELEVATION = {
-  MAPPED_RANGE: 0.1, // TODO: add to control UI
-  HALF_RANGE: 0.05,
+  MAPPED_RANGE: 0.5, // TODO: add to control UI
+  HALF_RANGE: 0.25,
 };
 
 const normalizeElevation = (elevation = 0, renderOptions) => {
+  if (!renderOptions.toggleElevation.value) {
+    return 0;
+  }
   const elevationMin = footToMeter(renderOptions.elevationMin.value);
   const elevationMax = footToMeter(renderOptions.elevationMax.value);
   const elevationRange = elevationMax - elevationMin;
@@ -40,25 +43,26 @@ const getCoordsFromPoint = ({ lat = 0, lon = 0, elevation = 0,}, aspectRatio, re
   ((lat - 0.5) * renderOptions.mapSize.value / aspectRatio) + renderOptions.centerY.value
 );
 
-// TODO: map elevation color
+// TODO: options for color
 const getColorForElevation = (elevation, renderOptions) => {
-  return new Color(renderOptions.pointColor.value);
-  // const elevationMin = footToMeter(renderOptions.elevationMin.value);
-  // const elevationMax = footToMeter(renderOptions.elevationMax.value);
-  // const elevationRange = elevationMax - elevationMin;
-  // const normalized = (elevation - elevationMin) / elevationRange;
-  // const adjusted = normalized * 0.75 + 0.25;
-  // return new Color(
-  //   adjusted,
-  //   0.5,
-  //   1 - adjusted,
-  // );
+  if (!renderOptions.elevationColorToggle.value) {
+    return new Color(renderOptions.pointColor.value);
+  }
+  const elevationMin = footToMeter(renderOptions.elevationMin.value);
+  const elevationMax = footToMeter(renderOptions.elevationMax.value);
+  const elevationRange = elevationMax - elevationMin;
+  const normalized = (elevation - elevationMin) / elevationRange;
+  const adjusted = normalized * 0.75 + 0.25;
+  return new Color(
+    adjusted,
+    0.5,
+    1 - adjusted,
+  );
 };
 
 export default class PointRenderer {
   constructor(profile, renderOptions) {
     const { activities, bounds, } = profile;
-    console.log(renderOptions);
     const filterIndex = renderOptions.skipPoints.value || 1;
     const allPoints = activities
       .flatMap(activity => activity.points)
@@ -69,8 +73,7 @@ export default class PointRenderer {
     const pointMaterial = new MeshLambertMaterial({ side: FrontSide, });
     
     this.animatedIndex = 0;
-    // TODO: if animation speed is 0, render all at once
-    this.animationSpeed = renderOptions.animationSpeed.value || 1;
+    this.animationSpeed = renderOptions.animationSpeed.value;
     this.cluster = new InstancedMesh(pointGeometry, pointMaterial, allPoints.length);
     
     this.particles = allPoints.map(particle => {
@@ -101,11 +104,13 @@ export default class PointRenderer {
   }
 
   update(elapsedTime) {
-    if (this.animatedIndex >= this.particles.length) {
+    if (this.animatedIndex >= this.particles.length - 1) {
       return false;
     }
     const objectProxy = new Object3D();
-    const pointsPerFrame = Math.floor(elapsedTime * this.animationSpeed);
+    const pointsPerFrame = this.animationSpeed <= 0
+      ? this.particles.length
+      : Math.floor(elapsedTime * this.animationSpeed);
     const lowerBound = this.animatedIndex;
     const upperBound = Math.min(lowerBound + pointsPerFrame, this.particles.length - 1);
     for (let i = lowerBound; i <= upperBound; i++) {
