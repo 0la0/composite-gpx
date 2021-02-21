@@ -46,3 +46,5 @@ export function msToSec(ms) {
 }
 
 export const footToMeter = ft => ft * 0.3048;
+
+export const PROJECTION_APPROXIMATION = 0.85;

@@ -31,9 +31,12 @@ export default function renderCanvas({ ctx, renderOptions, activities, width, he
   const strokeStyle = `${renderOptions.strokeColor.value}${strokeAlphaHex}`;
   const shadowAlphaHex = alphaFloatToHex(renderOptions.shadowAlpha.value);  
   const shadowStyle = `${renderOptions.shadowColor.value}${shadowAlphaHex}`;
-
-  ctx.fillStyle = renderOptions.canvasColor.value;
-  ctx.fillRect(0, 0, width, height);
+  if (renderOptions.canvasColor.value) {
+    ctx.fillStyle = renderOptions.canvasColor.value;
+    ctx.fillRect(0, 0, width, height);
+  } else {
+    ctx.clearRect(0, 0, width, height);
+  }
   ctx.fillStyle = fillStyle;
   ctx.strokeStyle = strokeStyle;
   ctx.lineCap = 'round';

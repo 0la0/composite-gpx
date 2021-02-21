@@ -1,5 +1,6 @@
 import BaseComponent from '../primitives/util/base-component.js';
 import renderCanvas from './CanvasRenderer';
+import { PROJECTION_APPROXIMATION, } from '../../services/Math.js';
 import markup from './activity-renderer-2d.html';
 import styles from './activity-renderer-2d.css';
 
@@ -48,7 +49,7 @@ export default class ActivityRenderer2d extends BaseComponent {
   render(profileData, renderOptions) {
     const { bounds, activities, } = profileData;
     const aspectRatio = (bounds.maxlon - bounds.minlon) / (bounds.maxlat - bounds.minlat);
-    const width = renderOptions.canvasSize.value * 0.75; // cheap approximation of an "accurate" map projection :grimace:
+    const width = renderOptions.canvasSize.value * PROJECTION_APPROXIMATION; // cheap approximation of an "accurate" map projection :grimace:
     const height = renderOptions.canvasSize.value / aspectRatio;
     this.dom.canvas.width = width;
     this.dom.canvas.height = height;

@@ -8,7 +8,7 @@ import {
   Object3D,
   Vector3,
 } from 'three';
-import { clamp, footToMeter, } from '../../services/Math.js';
+import { clamp, footToMeter, PROJECTION_APPROXIMATION, } from '../../services/Math.js';
 
 const scaleOn = new Vector3(1, 1, 1);
 
@@ -38,7 +38,7 @@ const normalizeElevation = (elevation = 0, renderOptions) => {
 };
 
 const getCoordsFromPoint = ({ lat = 0, lon = 0, elevation = 0,}, aspectRatio, renderOptions) => new Vector3(
-  ((lon - 0.5) * renderOptions.mapSize.value * 0.75) - renderOptions.centerX.value,
+  ((lon - 0.5) * renderOptions.mapSize.value * PROJECTION_APPROXIMATION) - renderOptions.centerX.value,
   normalizeElevation(elevation, renderOptions),
   ((lat - 0.5) * renderOptions.mapSize.value / aspectRatio) + renderOptions.centerY.value
 );
