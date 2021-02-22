@@ -24,7 +24,8 @@ export default class ActivityEditor extends BaseComponent {
   }
 
   createRenderView(name, bounds) {
-    this.profileService.createRenderView(this.activeProfileName, bounds, name);
+    const years = [ ...this.selectedYears, ];
+    this.profileService.createRenderView(this.activeProfileName, bounds, name, years);
   }
 
   loadProfile(profileName) {

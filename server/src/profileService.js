@@ -51,23 +51,28 @@ class ProfileService {
   }
 
   createRenderView(name, body) {
-    const { bounds, } = body;
+    const { bounds, years, } = body;
     return new Promise((resolve) => {
       const modifiedFileName = name.replace('.min', '');
       const file = fs.readFileSync(`${DIR.JSON}/${modifiedFileName}${FILE_TYPE.JSON}`).toString('utf8');
       const fileContents = JSON.parse(file);
-      const modifiedActivities = fileContents.activities.map(activity => {
-        const transformedPoints = activity.points
-          .map(point => ({
-            ...point,
-            ...transformPoint(point, bounds),
-          }))
-          .filter(point => point.lat >= 0 && point.lat <= 1 && point.lon >=0 && point.lon <= 1);
-        return {
-          ...activity,
-          points: transformedPoints,
-        };
-      }).filter(activity => activity.points.length);
+      const modifiedActivities = fileContents.activities
+        .filter(activity => {
+          const year = new Date(activity.time).getFullYear();
+          return years.includes(year);
+        })
+        .map(activity => {
+          const transformedPoints = activity.points
+            .map(point => ({
+              ...point,
+              ...transformPoint(point, bounds),
+            }))
+            .filter(point => point.lat >= 0 && point.lat <= 1 && point.lon >=0 && point.lon <= 1);
+          return {
+            ...activity,
+            points: transformedPoints,
+          };
+        }).filter(activity => activity.points.length);
       const appFile = {
         activities: modifiedActivities,
         bounds,

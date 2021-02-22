@@ -9,13 +9,13 @@ export default class ProfileService {
       .then(response => response.json());
   }
 
-  createRenderView(profileName, bounds, name) {
+  createRenderView(profileName, bounds, name, years) {
     return fetch(`/api/renderview/${profileName}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ bounds, name, }),
+      body: JSON.stringify({ bounds, name, years, }),
     });
   }
 

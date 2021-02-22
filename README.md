@@ -55,8 +55,18 @@ npm run processData [user-name]
 
 ---
 
-## Render Activities
-* From the homepage, click on the `Renderer` [link](http://localhost:3001/#/renderer)
-* In the "Profiles" section (upper right), a button should appear that matches the profile you selected in the previous step. Click a profile button.
+## Render Activities (2D)
+* From the homepage, click on [Renderer 2D](http://localhost:3001/#/renderer-2d)
+* In the "Profiles" section (upper right), a selection should appear that matches the profile you selected in the previous step.
 * Click the "Render" button.
-* To export, zoom in to 100%, right click on the image, and "Save Image As..."
+* After modifying render settings, click "Render" to see the results.
+* To export, right click on the image and select "Save Image"
+
+---
+
+## Render Activities (3D)
+* From the homepage, click on [Renderer 3D](http://localhost:3001/#/renderer-3d)
+* In the "Profiles" section (upper right), a selection should appear that matches the profile you selected in the previous step.
+* Click the "Start" button.
+* After modifying render settings, click "Pause / Start" to see the results.
+* To skip animating the data, set the "Animation Speed" to 0.
