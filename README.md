@@ -3,7 +3,11 @@ Render multiple GPX activites as a high resolution image.
 
 ![Renderer Image](/readme_assets/screen-recording.gif "Example Animation")
 
+--- 
+
 ![Renderer Image](/readme_assets/example_0.png "Example Image")
+
+--- 
 
 ![Renderer Image](/readme_assets/example_1.png "Example Image")
 
