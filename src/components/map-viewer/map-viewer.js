@@ -35,7 +35,7 @@ export default class MapViewer extends BaseComponent {
       initialCoords?.lon ?? INITIAL_COORD_FALLBACK.lon,
     ];
     const mapOptions = {
-      zoom: 12,
+      zoom: 11,
       preferCanvas: true,
       center,
     };

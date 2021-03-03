@@ -8,7 +8,7 @@ const ZOOM = {
   MIN: 0.05,
   MAX: 1,
   STEP: 0.025,
-  DEFAULT: 0.5,
+  DEFAULT: 0.15,
 };
 
 export default class ActivityRenderer2d extends BaseComponent {

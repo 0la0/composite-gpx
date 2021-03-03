@@ -1,17 +1,11 @@
 # CompositeGPX
 Render multiple GPX activites as a high resolution image.
 
----
+![Renderer Image](/readme_assets/screen-recording.gif "Example Animation")
 
-## Prepare Data
-* install [gpsbabel](https://formulae.brew.sh/formula/gpsbabel)
-* Get an archive of activities [strava bulk export](https://support.strava.com/hc/en-us/articles/216918437-Exporting-your-Data-and-Bulk-Export#Bulk)
-* copy contents of activities directory to `server/_temp/raw`
-* transform data to json:
-```bash
-cd server
-npm run processData [user-name]
-```
+![Renderer Image](/readme_assets/example_0.png "Example Image")
+
+![Renderer Image](/readme_assets/example_1.png "Example Image")
 
 --- 
 
@@ -30,34 +24,44 @@ npm run processData [user-name]
  }
 ```
 
+---
+
+## Prepare Data
+* install [gpsbabel](https://formulae.brew.sh/formula/gpsbabel)
+* Get an archive of activities
+  * [Strava bulk export](https://support.strava.com/hc/en-us/articles/216918437-Exporting-your-Data-and-Bulk-Export#Bulk)
+  * [Garmin bulk export](https://www.garmin.com/en-US/account/datamanagement/exportdata/)
+* create the directory structure: `server/_temp/raw`:
+```bash
+mkdir server/_temp; mkdir server/_temp/raw
+```
+* Copy activity files to: `server/_temp/raw`
+* Transform activity files to JSON:
+```bash
+cd server
+npm run processData [user-name]
+```
+
 ---  
 
 ## Run
-* `npm start`
+* From the root directory, run: `npm start`
 * Navigate to [localhost:3001](http://localhost:3001)
 
 ---
 
-![Editor Image](/readme_assets/editor.png?raw=true "Editor")
-
----
-
 ## Prepare Activity Area
-* From the homepage, click on the `Editor` [link](http://localhost:3001/#/editor)
+* From the homepage, click on the [Editor link](http://localhost:3001/#/editor)
 * In the "Profiles" section (upper right), a button should appear that matches the last argument from the earlier command: `npm run processData [user-name]`
 * Click the profile option and the activies will appear in low resolution.
 * Click the rectangle icon on the left to select an area to render.
-* Cancel or confirm.
-
----
-
-![Renderer Image](/readme_assets/renderer.png?raw=true "Renderer")
+* Enter a name for activity profile and click "confirm".
 
 ---
 
 ## Render Activities (2D)
 * From the homepage, click on [Renderer 2D](http://localhost:3001/#/renderer-2d)
-* In the "Profiles" section (upper right), a selection should appear that matches the profile you selected in the previous step.
+* In the "Profiles" section (upper right), a selection should appear that matches a profile created the previous step.
 * Click the "Render" button.
 * After modifying render settings, click "Render" to see the results.
 * To export, right click on the image and select "Save Image"
