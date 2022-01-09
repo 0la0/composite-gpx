@@ -18,6 +18,9 @@ export default class ActivityRenderer2d extends BaseComponent {
 
   constructor() {
     super(styles, markup, [ 'canvas', 'profileselector', 'rendercontrols', 'zoomin', 'zoomout', 'zoomdisplay' ]);
+  }
+
+  setZoom() {
     this.dom.zoomin.addEventListener('click', () => {
       this.zoom = Math.min(this.zoom + ZOOM.STEP, ZOOM.MAX);
       this.setZoom();
@@ -28,9 +31,6 @@ export default class ActivityRenderer2d extends BaseComponent {
     });
     this.zoom = ZOOM.DEFAULT;
     this.ctx = this.dom.canvas.getContext('2d');
-  }
-
-  setZoom() {
     this.dom.canvas.style.setProperty('width', `${this.dom.canvas.width * this.zoom}px`);
     this.dom.canvas.style.setProperty('height', `${this.dom.canvas.height * this.zoom}px`);
     this.dom.zoomdisplay.innerText = `${Math.round(this.zoom * 100)}%`;

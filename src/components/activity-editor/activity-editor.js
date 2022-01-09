@@ -10,13 +10,13 @@ export default class ActivityEditor extends BaseComponent {
 
   constructor() {
     super(styles, markup, [ 'map', 'selector', 'error', 'years', ]);
+  }
+
+  connectedCallback() {
     this.profileService = new ProfileService();
     this.activeProfileName = '';
     this.dom.selector.addEventListener('change', event => this.loadProfile(event.target.value));
     this.selectedYears = new Set();
-  }
-
-  connectedCallback() {
     this.dom.map.setRenderViewCallback(this.createRenderView.bind(this));
     this.profileService.getProfiles()
       .then(response => this.renderProfileSelector(response.profiles))

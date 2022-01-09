@@ -24,7 +24,11 @@ export default class BaseComponent extends HTMLElement {
     this.originalChildren.forEach(child => this.removeChild(child));
     const styleElement = document.createElement('style');
     const markupTemplate = document.createElement('template');
-    this.attachShadow({ mode: 'open' });
+    if (!this.shadowRoot) {
+      this.attachShadow({ mode: 'open' });
+    } else {
+      [...this.shadowRoot.children].forEach(child => this.shadowRoot.removeChild(child));
+    }
     styleElement.textContent = `${commonStyles}${style}`;
     markupTemplate.innerHTML = markup;
     this.shadowRoot.appendChild(styleElement);

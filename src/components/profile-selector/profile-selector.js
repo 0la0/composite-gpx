@@ -16,13 +16,13 @@ export default class ProfileSelector extends BaseComponent {
 
   constructor() {
     super(styles, markup, [ 'selector', ]);
+  }
+
+  connectedCallback() {
     this.profileService = new ProfileService();
     this.persistedStore = new PersistedStore();
     this.selectedProfileName = '';
     this.dom.selector.addEventListener('change', (event) => this.setActiveProfile(event.target.value));
-  }
-
-  connectedCallback() {
     this.profileService.getRenderViews()
       .then((response) => {
         const persistedData = this.persistedStore.getObjectFromStorage(Constants.STORE_KEY);
@@ -30,6 +30,9 @@ export default class ProfileSelector extends BaseComponent {
           this.setActiveProfile(persistedData.profileName);
         }
         this.renderProfileMenu(response.views, persistedData?.profileName);
+        if (!this.selectedProfileName && response?.views?.[0]) {
+          this.setActiveProfile(response?.views?.[0]);
+        }
       })
       .catch(error => console.log(error));
   }
